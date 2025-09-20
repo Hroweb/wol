@@ -38,7 +38,7 @@
               {{\App\Helpers\Helper::getAuthFullName(\Illuminate\Support\Facades\Auth::user())}}
             </span>
             <span class="text-theme-xs mt-0.5 block text-gray-500 dark:text-gray-400">
-              {{Auth::user()->email}}
+              {{Auth::user()->email ?? 'hroweb'}}
             </span>
         </div>
 

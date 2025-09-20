@@ -6,7 +6,7 @@
           <span class="menu-group-title" :class="sidebarToggle ? 'lg:hidden' : ''">
             MENU
           </span>
-            <x-dashboard.svgs.menu />
+            <x-admin.svgs.menu />
         </h3>
         <ul class="flex flex-col gap-4 mb-6">
             @foreach(\App\Helpers\Helper::dashboardMenu() as $menuItem)
