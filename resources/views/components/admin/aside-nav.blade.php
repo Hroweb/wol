@@ -1,5 +1,5 @@
 <!-- Aside Navigation -->
-<nav x-data="{selected: $persist('Dashboard')}">
+<nav>
     <!-- Nav Group -->
     <div>
         <h3 class="mb-4 text-xs uppercase leading-[20px] text-gray-400">

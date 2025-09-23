@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TeacherController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-/*Route::get('/dashboard', function () {
-    return view('admin.dashboard')->name('aa');
-});*/
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.index');
+});

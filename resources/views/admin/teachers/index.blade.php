@@ -1,0 +1,128 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Teachers') }}
+        </h2>
+    </x-slot>
+
+    <div class="customers-page admin-page">
+        {{-- Breadcrumbs --}}
+        <x-admin.breadcrumbs page="Teachers" />
+
+        <div class="space-y-5 sm:space-y-6">
+            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                {{-- Export + Add new --}}
+                <x-admin.tables.top
+                    :title="'John 10:11'"
+                    :slug="'I am the good shepherd. The good shepherd lays down his life for the sheep'"
+                    :export="true"
+                    :addNew="true"
+                />
+
+                <div class="custom-scrollbar overflow-x-auto">
+                    @if($teachers)
+                        <div
+                            class="custom-scrollbar overflow-x-auto"
+                            x-data="tableSelect({ items: @js($teachers->getCollection()->pluck('id')) })"
+                        >
+                            <table class="w-full table-auto">
+                                <thead>
+                                    <x-admin.tables.headers
+                                        :columns="['Photo', 'Name', 'Email', 'Position', 'Created' ,'Actions']"
+                                        :sortable="['name', 'email', 'position', 'created_at']"
+                                        :checkBox="true"
+                                    />
+                                </thead>
+
+                                <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
+                                @forelse($teachers as $t)
+                                    <tr class="transition hover:bg-gray-50 dark:hover:bg-white/[0.03]">
+                                        {{-- Select checkbox --}}
+                                        <td class="w-10 px-5 py-4 whitespace-nowrap">
+                                            <label class="flex justify-center cursor-pointer select-none">
+                                                <input
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    @change="toggle({{ $t->id }})"
+                                                    :checked="isSelected({{ $t->id }})"
+                                                >
+                                                <span
+                                                    class="flex h-5 w-5 items-center justify-center rounded-sm border-[1.25px]"
+                                                    :class="isSelected({{ $t->id }}) ? 'border-brand-500 bg-brand-500' : 'bg-transparent border-gray-300 dark:border-gray-700'"
+                                                >
+                                                        <span :class="isSelected({{ $t->id }}) ? '' : 'opacity-0'">
+                                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M10 3L4.5 8.5L2 6" stroke="white" stroke-width="1.6666" stroke-linecap="round" stroke-linejoin="round"/>
+                                                            </svg>
+                                                        </span>
+                                                    </span>
+                                            </label>
+                                        </td>
+
+                                        {{-- Photo --}}
+                                        <td class="w-12 px-5 py-4 whitespace-nowrap">
+                                            <img
+                                                src="{{ asset('storage/teachers/pastor.jpg') }}"
+                                                alt="{{ $t->localized['first_name'] ?? $t->first_name }}"
+                                                class="h-10 w-10 rounded-full object-cover"
+                                            >
+                                        </td>
+
+                                        {{-- Name --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    {{ \App\Helpers\Helper::getAuthFullName($t->localized) }}
+                                                </span>
+                                        </td>
+
+                                        {{-- Email --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    {{ $t->email }}
+                                                </span>
+                                        </td>
+
+                                        {{-- Position --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    {{ $t->localized['position'] ?? $t->position }}
+                                                </span>
+                                        </td>
+
+                                        {{-- Created_At --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    {{ \App\Helpers\Helper::convertDate($t->created_at) }}
+                                                </span>
+                                        </td>
+
+                                        {{-- Actions --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <a href="#" class="text-sm font-medium text-indigo-600 hover:underline">Edit</a>
+                                            </span>
+                                            <span class="px-1 text-gray-400">|</span>
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <a href="#" class="text-sm font-medium text-rose-600 hover:underline">Delete</a>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="px-5 py-6 text-center text-sm text-gray-500">
+                                            No data found
+                                        </td>
+                                    </tr>
+                                @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                    @if($teachers->hasPages())
+                        <x-admin.tables.paginate :paginator="$teachers" />
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

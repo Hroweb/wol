@@ -8,8 +8,12 @@ class Helper
 {
     public static function getAuthFullName($data): string
     {
-        //return "{$data['first_name']} {$data['last_name']}" ?? '';
-        return 'Admin';
+        return "{$data['first_name']} {$data['last_name']}" ?? '';
+    }
+
+    public static function convertDate($datetime): string
+    {
+        return date('d M, Y', strtotime($datetime));
     }
 
     public static function dashboardMenu(): array
@@ -24,8 +28,7 @@ class Helper
             [
                 'name' => 'Teachers',
                 'icon' => 'teachers-icon',
-                'uri' => 'lola',
-//                'uri' => route('admin.teachers.index'),
+                'uri' => route('admin.teachers.index'),
                 'route_name' => 'admin.teachers.index',
             ],
             [
