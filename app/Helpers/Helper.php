@@ -48,8 +48,8 @@ class Helper
             [
                 'name' => 'Lessons',
                 'icon' => 'lessons-icon',
-                'uri' => 'lessons',
-                'route_name' => 'admin.lessons.index',
+                'uri' => route('admin.courses.index'),
+                'route_name' => 'admin.courses.index',
             ],
             [
                 'name' => 'Students',
