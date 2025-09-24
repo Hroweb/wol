@@ -16,6 +16,20 @@ class Helper
         return date('d M, Y', strtotime($datetime));
     }
 
+    public static function sortableOrder($sort, $dir, $fields): array
+    {
+        $sort = strtolower($sort ?? 'created_at'); // e.g. name | email | position | created_at
+        $dir  = strtolower($dir ?? 'desc');       // asc | desc
+
+        if (! in_array($sort, $fields, true)) $sort = 'created_at';
+        if (! in_array($dir, ['asc','desc'], true)) $dir = 'desc';
+
+        // Build order array for repo (can include multiple)
+        return [
+            ['key' => $sort, 'dir' => $dir],
+        ];
+    }
+
     public static function dashboardMenu(): array
     {
         $items = [
@@ -40,7 +54,7 @@ class Helper
             [
                 'name' => 'Students',
                 'icon' => 'students-icon',
-                'uri' => 'students',
+                'uri' => route('admin.students.index'),
                 'route_name' => 'admin.students.index',
             ],
             [
