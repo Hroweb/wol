@@ -26,7 +26,7 @@
     @forelse($columns as $col)
         @php
             // Use lowercase keys for query param
-            $colKey = strtolower($col) === 'created' ? 'created_at' : strtolower($col);
+            $colKey = strtolower($col) === 'created' ? 'created_at' : preg_replace('/\s+/', '_', strtolower(trim($col)));
             $isSortable = in_array($colKey, $sortable);
             $isCurrent = request('sort') === $colKey;
             $dir = $isCurrent && request('dir') === 'asc' ? 'desc' : 'asc';
@@ -38,12 +38,12 @@
                     <span>{{ $col }}</span>
                     <span class="flex flex-col leading-none">
                     {{-- up arrow --}}
-                    <svg class="{{ $isCurrent && request('dir') === 'asc' ? 'text-gray-600 dark:text-gray-300' : 'text-gray-300 dark:text-gray-500/50' }}"
+                    <svg class="{{ $isCurrent && request('dir') === 'asc' ? 'text-gray-600 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500/50' }}"
                          width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.41.585a.5.5 0 0 0-.82 0L1.05 4.213A.5.5 0 0 0 1.46 5h5.08a.5.5 0 0 0 .41-.787L4.41.585Z" fill="currentColor"/>
                     </svg>
                     {{-- down arrow --}}
-                    <svg class="{{ $isCurrent && request('dir') === 'desc' ? 'text-gray-600 dark:text-gray-300' : 'text-gray-300 dark:text-gray-500/50' }}"
+                    <svg class="{{ $isCurrent && request('dir') === 'desc' ? 'text-gray-600 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500/50' }}"
                          width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.41 4.415a.5.5 0 0 1-.82 0L1.05.787A.5.5 0 0 1 1.46 0h5.08a.5.5 0 0 1 .41.787L4.41 4.415Z" fill="currentColor"/>
                     </svg>

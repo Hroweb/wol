@@ -31,7 +31,9 @@ class CourseService
             ?? $course->translations()->firstWhere('locale', $fallback);
 
         $course->localized = [
-
+            'title' => $translation->title,
+            'description' => $translation->description,
+            'slug' => $translation->slug,
         ];
     }
 }

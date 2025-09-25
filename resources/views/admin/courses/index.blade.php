@@ -28,8 +28,8 @@
                             <table class="w-full table-auto">
                                 <thead>
                                 <x-admin.tables.headers
-                                    :columns="['Photo', 'Name', 'Email', 'Position', 'Created' ,'Actions']"
-                                    :sortable="['name', 'email', 'position', 'created_at']"
+                                    :columns="['Title', 'Description', 'Academic Year', 'Start Date', 'End Date', 'Actions']"
+                                    :sortable="['title', 'description', 'start_date', 'end_date', 'created_at']"
                                     :checkBox="true"
                                 />
                                 </thead>
@@ -59,46 +59,55 @@
                                             </label>
                                         </td>
 
-                                        {{-- Photo --}}
-                                        <td class="w-12 px-5 py-4 whitespace-nowrap">
-
+                                        {{-- Title --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{$c->localized['title']}}
+                                            </span>
                                         </td>
 
-                                        {{-- Name --}}
+                                        {{-- Description --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{$c->localized['description']}}
+                                            </span>
+                                        </td>
 
+                                        {{-- Email --}}{{--
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+
+                                                </span>
+                                        </td>--}}
+
+                                        {{-- Academic Year --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                    {{$c->academic_year}}
                                                 </span>
                                         </td>
 
-                                        {{-- Email --}}
+                                        {{-- Start Date --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                    {{\App\Helpers\Helper::convertDate($c->start_date)}}
                                                 </span>
                                         </td>
 
-                                        {{-- Position --}}
+                                        {{-- End Date --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-
-                                                </span>
-                                        </td>
-
-                                        {{-- Created_At --}}
-                                        <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                    {{\App\Helpers\Helper::convertDate($c->end_date)}}
                                                 </span>
                                         </td>
 
                                         {{-- Actions --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                 <a href="#" class="text-sm font-medium text-indigo-600 hover:underline">Edit</a>
                                             </span>
                                             <span class="px-1 text-gray-400">|</span>
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                 <a href="#" class="text-sm font-medium text-rose-600 hover:underline">Delete</a>
                                             </span>
                                         </td>

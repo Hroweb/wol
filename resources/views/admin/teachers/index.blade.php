@@ -70,39 +70,39 @@
 
                                         {{-- Name --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                     {{ \App\Helpers\Helper::getAuthFullName($t->localized) }}
                                                 </span>
                                         </td>
 
                                         {{-- Email --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                     {{ $t->email }}
                                                 </span>
                                         </td>
 
                                         {{-- Position --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                     {{ $t->localized['position'] ?? $t->position }}
                                                 </span>
                                         </td>
 
                                         {{-- Created_At --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                     {{ \App\Helpers\Helper::convertDate($t->created_at) }}
                                                 </span>
                                         </td>
 
                                         {{-- Actions --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                 <a href="#" class="text-sm font-medium text-indigo-600 hover:underline">Edit</a>
                                             </span>
                                             <span class="px-1 text-gray-400">|</span>
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
                                                 <a href="#" class="text-sm font-medium text-rose-600 hover:underline">Delete</a>
                                             </span>
                                         </td>

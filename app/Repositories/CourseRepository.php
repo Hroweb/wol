@@ -8,12 +8,12 @@ class CourseRepository
 {
     protected function translatableSortable(): array
     {
-        return [];
+        return ['title', 'slug', 'description'];
     }
 
     protected function baseSortable(): array
     {
-        return [];
+        return ['created_at', 'start_date', 'end_date'];
     }
 
     public function paginateWithTranslations(
@@ -49,7 +49,7 @@ class CourseRepository
 
                 if (in_array($key, $this->translatableSortable(), true)) {
                     // translated-only fields: coalesce locale -> fallback (no teachers.<col>)
-                    $q->orderByRaw("COALESCE(t_loc.{$key}, t_fb.{$key}, '') {$dir}");
+                    $q->orderByRaw("COALESCE(c_loc.{$key}, c_fb.{$key}, '') {$dir}");
                     continue;
                 }
 
