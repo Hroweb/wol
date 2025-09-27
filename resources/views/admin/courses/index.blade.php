@@ -17,6 +17,7 @@
                     :slug="'I am the good shepherd. The good shepherd lays down his life for the sheep'"
                     :export="true"
                     :addNew="true"
+                    :page="'courses'"
                 />
 
                 <div class="custom-scrollbar overflow-x-auto">
@@ -89,28 +90,20 @@
 
                                         {{-- Start Date --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                    {{\App\Helpers\Helper::convertDate($c->start_date)}}
-                                                </span>
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{\App\Helpers\Helper::convertDate($c->start_date)}}
+                                            </span>
                                         </td>
 
                                         {{-- End Date --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                    {{\App\Helpers\Helper::convertDate($c->end_date)}}
-                                                </span>
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{\App\Helpers\Helper::convertDate($c->end_date)}}
+                                            </span>
                                         </td>
 
                                         {{-- Actions --}}
-                                        <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                <a href="#" class="text-sm font-medium text-indigo-600 hover:underline">Edit</a>
-                                            </span>
-                                            <span class="px-1 text-gray-400">|</span>
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                <a href="#" class="text-sm font-medium text-rose-600 hover:underline">Delete</a>
-                                            </span>
-                                        </td>
+                                        <x-admin.tables.actions :id="'{{$c->id}}'" :page="'courses'" />
                                     </tr>
                                 @empty
                                     <tr>

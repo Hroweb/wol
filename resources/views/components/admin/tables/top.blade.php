@@ -1,3 +1,4 @@
+@props(['title', 'slug', 'addNew', 'export', 'page'])
 <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800">
     <div>
         <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
@@ -18,7 +19,7 @@
                 </button>
             @endif
             @if($addNew)
-                <a href="#add-teacher" class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition">
+                <a href="{{Route::has('admin.'.$page.'.create') ? route('admin.'.$page.'.create') : '#'}}" class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>

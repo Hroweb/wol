@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Teacher;
 use App\Repositories\TeacherRepository;
+use Illuminate\Http\UploadedFile;
 
 
 class TeacherService
@@ -19,6 +20,25 @@ class TeacherService
             return $t;
         });
         return $paginator;
+    }
+
+    public function store(array $payload): Teacher
+    {
+        $photoPath = null;
+        if (isset($payload['photo']) && $payload['photo'] instanceof UploadedFile) {
+            $photoPath = $payload['photo']->store('teachers', 'public');
+        }
+
+        $base = [
+            'photo' => $photoPath,
+            'email' => $payload['email'] ?? null,
+            'is_featured' => (bool)($payload['is_featured'] ?? false),
+            'social_ig' => $payload['social_ig'] ?? null,
+            'social_youtube' => $payload['social_youtube'] ?? null,
+        ];
+
+        $translations = $payload['translations'] ?? [];
+        return $this->repo->createWithTranslations($base, $translations);
     }
 
     private function resolveLocale(?string $locale): array

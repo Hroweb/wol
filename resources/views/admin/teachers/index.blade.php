@@ -17,6 +17,7 @@
                     :slug="'I am the good shepherd. The good shepherd lays down his life for the sheep'"
                     :export="true"
                     :addNew="true"
+                    :page="'teachers'"
                 />
 
                 <div class="custom-scrollbar overflow-x-auto">
@@ -28,7 +29,7 @@
                             <table class="w-full table-auto">
                                 <thead>
                                     <x-admin.tables.headers
-                                        :columns="['Photo', 'Name', 'Email', 'Position', 'Created' ,'Actions']"
+                                        :columns="['Photo', 'Name', 'Email', 'Position', 'Church Name', 'Created' ,'Actions']"
                                         :sortable="['name', 'email', 'position', 'created_at']"
                                         :checkBox="true"
                                     />
@@ -60,52 +61,61 @@
                                         </td>
 
                                         {{-- Photo --}}
-                                        <td class="w-12 px-5 py-4 whitespace-nowrap">
-                                            <img
-                                                src="{{ asset('storage/teachers/pastor.jpg') }}"
-                                                alt="{{ $t->localized['first_name'] ?? $t->first_name }}"
-                                                class="h-10 w-10 rounded-full object-cover"
-                                            >
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                @if($t->photo && file_exists(public_path('storage/teachers/' . $t->photo)))
+                                                    <img
+                                                        src="{{ asset('storage/'.$t->photo) }}"
+                                                        alt="{{ $t->localized['first_name'] ?? $t->first_name }}"
+                                                        class="h-10 w-10 rounded-full object-cover border border-gray-200"
+                                                    >
+                                                @else
+                                                    <div class="h-10 w-10 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center">
+                                                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                        </svg>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </td>
 
                                         {{-- Name --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                    {{ \App\Helpers\Helper::getAuthFullName($t->localized) }}
-                                                </span>
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{ \App\Helpers\Helper::getAuthFullName($t->localized) }}
+                                            </span>
                                         </td>
 
                                         {{-- Email --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                    {{ $t->email }}
-                                                </span>
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{ $t->email }}
+                                            </span>
                                         </td>
 
                                         {{-- Position --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                    {{ $t->localized['position'] ?? $t->position }}
-                                                </span>
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{ $t->localized['position'] ?? $t->position }}
+                                            </span>
+                                        </td>
+
+                                        {{-- Church Name --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{ $t->localized['church_name'] ?? $t->church_name }}
+                                            </span>
                                         </td>
 
                                         {{-- Created_At --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                    {{ \App\Helpers\Helper::convertDate($t->created_at) }}
-                                                </span>
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                {{ \App\Helpers\Helper::convertDate($t->created_at) }}
+                                            </span>
                                         </td>
 
                                         {{-- Actions --}}
-                                        <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                <a href="#" class="text-sm font-medium text-indigo-600 hover:underline">Edit</a>
-                                            </span>
-                                            <span class="px-1 text-gray-400">|</span>
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                <a href="#" class="text-sm font-medium text-rose-600 hover:underline">Delete</a>
-                                            </span>
-                                        </td>
+                                        <x-admin.tables.actions :id="'{{$t->id}}'" :page="'teachers'" />
                                     </tr>
                                 @empty
                                     <tr>

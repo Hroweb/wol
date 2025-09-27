@@ -17,7 +17,8 @@
                     :title="'John 10:11'"
                     :slug="'I am the good shepherd. The good shepherd lays down his life for the sheep'"
                     :export="true"
-                    :addNew="false"
+                    :addNew="true"
+                    :page="'user'"
                 />
 
                 <div class="custom-scrollbar overflow-x-auto">
@@ -63,49 +64,41 @@
 
                                     {{-- Name --}}
                                     <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                {{ \App\Helpers\Helper::getAuthFullName($s) }}
-                                            </span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            {{ \App\Helpers\Helper::getAuthFullName($s) }}
+                                        </span>
                                     </td>
 
                                     {{-- Email --}}
                                     <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                {{ $s->email }}
-                                            </span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            {{ $s->email }}
+                                        </span>
                                     </td>
 
                                     {{-- Position --}}
                                     <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                {{ $s->localized['position'] ?? $s->position }}
-                                            </span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            {{ $s->localized['position'] ?? $s->position }}
+                                        </span>
                                     </td>
 
                                     {{-- Affiliation --}}
                                     <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                {{ $s->localized['church_affiliation'] ?? $s->church_affiliation }}
-                                            </span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            {{ $s->localized['church_affiliation'] ?? $s->church_affiliation }}
+                                        </span>
                                     </td>
 
                                     {{-- Created_At --}}
                                     <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                {{ \App\Helpers\Helper::convertDate($s->created_at) }}
-                                            </span>
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            {{ \App\Helpers\Helper::convertDate($s->created_at) }}
+                                        </span>
                                     </td>
 
                                     {{-- Actions --}}
-                                    <td class="px-5 py-4 whitespace-nowrap">
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                            <a href="#" class="text-sm font-medium text-indigo-600 hover:underline">Edit</a>
-                                        </span>
-                                        <span class="px-1 text-gray-400">|</span>
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                            <a href="#" class="text-sm font-medium text-rose-600 hover:underline">Delete</a>
-                                        </span>
-                                    </td>
+                                    <x-admin.tables.actions :id="'{{$s->id}}'" :page="'user'" />
                                 </tr>
                             @empty
                                 <tr>

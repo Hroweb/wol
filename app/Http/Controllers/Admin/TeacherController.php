@@ -18,4 +18,26 @@ class TeacherController extends Controller
         $teachers = $service->list(10, 'en', $order);
         return view('admin.teachers.index', compact('teachers'));
     }
+
+    public function create(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory
+    {
+        return view('admin.teachers.create');
+    }
+
+    public function store(StoreTeacherRequest $request, TeacherService $service): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validated();
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo');
+        }
+        $teacher = $service->store($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json($teacher, 201);
+        }
+
+        return redirect()->route('admin.teachers.index')
+            ->with('success', 'Teacher created successfully');
+    }
+
 }

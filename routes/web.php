@@ -13,6 +13,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.index');
+    Route::get('/teachers/create', [TeacherController::class, 'create'])->name('teachers.create');
     Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
 
     Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
