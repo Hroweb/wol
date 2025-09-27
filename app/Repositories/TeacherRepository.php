@@ -113,6 +113,7 @@ class TeacherRepository
             $teacher = Teacher::create($baseData);
             $prepared = collect($translations)
                 ->map(function ($t) {
+
                     return [
                         'locale' => $t['locale'],
                         'first_name' => $t['first_name'] ?? '',

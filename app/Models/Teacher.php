@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Teacher extends Model
 {
     protected $fillable = [
-        'first_name','last_name','bio','position','photo','email',
-        'specializations','church_name','city','country','is_featured',
-        'social_ig','social_youtube',
+        'photo',
+        'email',
+        'is_featured',
+        'social_ig',
+        'social_youtube',
     ];
 
     protected $casts = ['is_featured' => 'boolean'];

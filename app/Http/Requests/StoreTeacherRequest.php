@@ -11,63 +11,129 @@ class StoreTeacherRequest extends FormRequest
         return $this->user()?->role === 'admin';
     }
 
+    /**
+     * Normalize input so empty locale blocks don't trigger required_with.
+     * - Trim strings
+     * - If a locale block has no meaningful values -> remove it entirely
+     */
+    protected function prepareForValidation(): void
+    {
+        $t = $this->input('translations', []);
+
+        foreach (['en', 'hy'] as $loc) {
+            if (!isset($t[$loc]) || !is_array($t[$loc])) {
+                continue;
+            }
+
+            // Trim strings
+            foreach ($t[$loc] as $k => $v) {
+                if (is_string($v)) {
+                    $t[$loc][$k] = trim($v);
+                }
+            }
+
+            // Normalize specializations if it's an array (drop empties)
+            if (isset($t[$loc]['specializations']) && is_array($t[$loc]['specializations'])) {
+                $t[$loc]['specializations'] = array_values(
+                    array_filter($t[$loc]['specializations'], fn ($x) => !is_null($x) && $x !== '')
+                );
+            }
+
+            // Decide if this locale has any meaningful content
+            $keys = ['first_name','last_name','bio','position','church_name','city','country','specializations'];
+            $hasMeaning = false;
+            foreach ($keys as $k) {
+                $val = $t[$loc][$k] ?? null;
+                if (is_array($val)) {
+                    if (count($val) > 0) { $hasMeaning = true; break; }
+                } else {
+                    if ($val !== null && $val !== '') { $hasMeaning = true; break; }
+                }
+            }
+
+            if (!$hasMeaning) {
+                unset($t[$loc]); // remove empty block so required_with won't trigger
+            }
+        }
+
+        $this->merge(['translations' => $t]);
+    }
+
     public function rules(): array
     {
         return [
-            'photo' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:5120'],
-            'email' => ['required','email'],
-            'is_featured' => ['sometimes','boolean'],
-            'social_ig' => ['nullable','string','max:255'],
+            'photo'          => ['nullable','image','mimes:jpg,jpeg,png,webp','max:5120'],
+            'email'          => ['required','email'],
+            'is_featured'    => ['sometimes','boolean'],
+            'social_ig'      => ['nullable','string','max:255'],
             'social_youtube' => ['nullable','string','max:255'],
 
-            'translations' => ['required','array'],
-            'translations.en' => ['nullable','array'],
-            'translations.hy' => ['nullable','array'],
-            'translations.en.locale' => ['nullable','string','max:5','in:en'],
-            'translations.hy.locale' => ['nullable','string','max:5','in:hy'],
-            // EN fields are required unless HY equivalent is present
-            'translations.en.first_name' => ['required_without:translations.hy.first_name','string','max:255'],
-            'translations.en.last_name' => ['required_without:translations.hy.last_name','string','max:255'],
-            'translations.en.bio' => ['required_without:translations.hy.bio','string'],
-            'translations.en.specializations' => ['required_without:translations.hy.specializations'],
-            'translations.en.position' => ['required_without:translations.hy.position','string','max:150'],
-            'translations.en.church_name' => ['required_without:translations.hy.church_name','string','max:150'],
-            'translations.en.city' => ['required_without:translations.hy.city','string','max:100'],
-            'translations.en.country' => ['required_without:translations.hy.country','string','max:100'],
-            // HY fields are required unless EN equivalent is present
-            'translations.hy.first_name' => ['required_without:translations.en.first_name','string','max:255'],
-            'translations.hy.last_name' => ['required_without:translations.en.last_name','string','max:255'],
-            'translations.hy.bio' => ['required_without:translations.en.bio','string'],
-            'translations.hy.specializations' => ['required_without:translations.en.specializations'],
-            'translations.hy.position' => ['required_without:translations.en.position','string','max:150'],
-            'translations.hy.church_name' => ['required_without:translations.en.church_name','string','max:150'],
-            'translations.hy.city' => ['required_without:translations.en.city','string','max:100'],
-            'translations.hy.country' => ['required_without:translations.en.country','string','max:100'],
+            'translations'   => ['required','array'],
+
+            // At least one locale must be present (after prepareForValidation)
+            'translations.en' => ['nullable','array','required_without:translations.hy'],
+            'translations.hy' => ['nullable','array','required_without:translations.en'],
+
+            // Locale codes are optional if you don't send them
+            'translations.en.locale' => ['sometimes','string','max:5','in:en'],
+            'translations.hy.locale' => ['sometimes','string','max:5','in:hy'],
+
+            // If EN block exists, require these EN fields
+            'translations.en.first_name'      => ['required_with:translations.en','string','max:255'],
+            'translations.en.last_name'       => ['required_with:translations.en','string','max:255'],
+            'translations.en.bio'             => ['required_with:translations.en','string'],
+            'translations.en.specializations' => ['required_with:translations.en'],
+            'translations.en.position'        => ['required_with:translations.en','string','max:150'],
+            'translations.en.church_name'     => ['required_with:translations.en','string','max:150'],
+            'translations.en.city'            => ['required_with:translations.en','string','max:100'],
+            'translations.en.country'         => ['required_with:translations.en','string','max:100'],
+
+            // If HY block exists, require these HY fields
+            'translations.hy.first_name'      => ['required_with:translations.hy','string','max:255'],
+            'translations.hy.last_name'       => ['required_with:translations.hy','string','max:255'],
+            'translations.hy.bio'             => ['required_with:translations.hy','string'],
+            'translations.hy.specializations' => ['required_with:translations.hy'],
+            'translations.hy.position'        => ['required_with:translations.hy','string','max:150'],
+            'translations.hy.church_name'     => ['required_with:translations.hy','string','max:150'],
+            'translations.hy.city'            => ['required_with:translations.hy','string','max:100'],
+            'translations.hy.country'         => ['required_with:translations.hy','string','max:100'],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        // Optional: assert that at least one locale truly exists after normalization
+        $validator->after(function ($v) {
+            $t = $this->input('translations', []);
+            if (empty($t['en']) && empty($t['hy'])) {
+                $v->errors()->add('translations', 'Provide English or Armenian information.');
+            }
+        });
     }
 
     public function messages(): array
     {
         return [
-            'translations.en.first_name.required_without' => 'First Name is required',
-            'translations.en.last_name.required_without' => 'Last Name is required',
-            'translations.en.bio.required_without' => 'Bio is required',
-            'translations.en.specializations.required_without' => 'Specializations are required',
-            'translations.en.position.required_without' => 'Position is required',
-            'translations.en.church_name.required_without' => 'Church Name is required',
-            'translations.en.city.required_without' => 'City is required',
-            'translations.en.country.required_without' => 'Country is required',
+            'translations.en.required_without' => 'Provide English or Armenian information.',
+            'translations.hy.required_without' => 'Provide English or Armenian information.',
 
-            'translations.hy.first_name.required_without' => 'First Name is required',
-            'translations.hy.last_name.required_without' => 'Last Name is required',
-            'translations.hy.bio.required_without' => 'Bio is required',
-            'translations.hy.specializations.required_without' => 'Specializations are required',
-            'translations.hy.position.required_without' => 'Position is required',
-            'translations.hy.church_name.required_without' => 'Church Name is required',
-            'translations.hy.city.required_without' => 'City is required',
-            'translations.hy.country.required_without' => 'Country is required',
+            'translations.en.first_name.required_with' => 'First Name is required for English translation',
+            'translations.en.last_name.required_with'  => 'Last Name is required for English translation',
+            'translations.en.bio.required_with'        => 'Bio is required for English translation',
+            'translations.en.specializations.required_with' => 'Specializations are required for English translation',
+            'translations.en.position.required_with'   => 'Position is required for English translation',
+            'translations.en.church_name.required_with'=> 'Church Name is required for English translation',
+            'translations.en.city.required_with'       => 'City is required for English translation',
+            'translations.en.country.required_with'    => 'Country is required for English translation',
+
+            'translations.hy.first_name.required_with' => 'First Name is required for Armenian translation',
+            'translations.hy.last_name.required_with'  => 'Last Name is required for Armenian translation',
+            'translations.hy.bio.required_with'        => 'Bio is required for Armenian translation',
+            'translations.hy.specializations.required_with' => 'Specializations are required for Armenian translation',
+            'translations.hy.position.required_with'   => 'Position is required for Armenian translation',
+            'translations.hy.church_name.required_with'=> 'Church Name is required for Armenian translation',
+            'translations.hy.city.required_with'       => 'City is required for Armenian translation',
+            'translations.hy.country.required_with'    => 'Country is required for Armenian translation',
         ];
     }
 }
-
-

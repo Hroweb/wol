@@ -9,7 +9,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TeacherTranslation extends Model
 {
     use HasFactory;
-    protected $fillable = ['teacher_id','locale','bio','specializations'];
+    protected $fillable = [
+        'teacher_id',
+        'locale',
+        'first_name',
+        'last_name',
+        'bio',
+        'specializations',
+        'position',
+        'church_name',
+        'city',
+        'country',
+    ];
 
     public function teacher(): BelongsTo
     {

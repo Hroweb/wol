@@ -81,4 +81,9 @@ class Helper
 
         return $items;
     }
+
+    public static function getLocales(): array
+    {
+        return ['en' => 'English', 'hy' => 'Armenian'];
+    }
 }
