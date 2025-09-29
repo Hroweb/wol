@@ -135,4 +135,36 @@ class TeacherRepository
             return $teacher->load('translations');
         });
     }
+
+    public function updateWithTranslations(Teacher $teacher, array $baseData, array $translations): Teacher
+    {
+        return DB::transaction(function () use ($teacher, $baseData, $translations) {
+            $teacher->update($baseData);
+
+            // Delete existing translations
+            $teacher->translations()->delete();
+
+            $prepared = collect($translations)
+                ->map(function ($t) {
+                    return [
+                        'locale' => $t['locale'],
+                        'first_name' => $t['first_name'] ?? '',
+                        'last_name' => $t['last_name'] ?? '',
+                        'bio' => $t['bio'] ?? null,
+                        'specializations' => isset($t['specializations'])
+                            ? (is_array($t['specializations']) ? implode(',', $t['specializations']) : $t['specializations'])
+                            : null,
+                        'position' => $t['position'] ?? null,
+                        'church_name' => $t['church_name'] ?? null,
+                        'city' => $t['city'] ?? null,
+                        'country' => $t['country'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                })->all();
+
+            $teacher->translations()->createMany($prepared);
+            return $teacher->load('translations');
+        });
+    }
 }

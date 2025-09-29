@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Teacher;
 use App\Repositories\TeacherRepository;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 
 class TeacherService
@@ -39,6 +40,29 @@ class TeacherService
 
         $translations = $payload['translations'] ?? [];
         return $this->repo->createWithTranslations($base, $translations);
+    }
+
+    public function update(Teacher $teacher, array $payload): Teacher
+    {
+        $photoPath = $teacher->photo;
+        if (isset($payload['photo']) && $payload['photo'] instanceof UploadedFile) {
+            // Delete old photo if exists
+            if ($teacher->photo && Storage::disk('public')->exists($teacher->photo)) {
+                Storage::disk('public')->delete($teacher->photo);
+            }
+            $photoPath = $payload['photo']->store('teachers', 'public');
+        }
+
+        $base = [
+            'photo' => $photoPath,
+            'email' => $payload['email'] ?? null,
+            'is_featured' => (bool)($payload['is_featured'] ?? false),
+            'social_ig' => $payload['social_ig'] ?? null,
+            'social_youtube' => $payload['social_youtube'] ?? null,
+        ];
+
+        $translations = $payload['translations'] ?? [];
+        return $this->repo->updateWithTranslations($teacher, $base, $translations);
     }
 
     private function resolveLocale(?string $locale): array

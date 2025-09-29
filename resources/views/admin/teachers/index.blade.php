@@ -63,7 +63,7 @@
                                         {{-- Photo --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
-                                                @if($t->photo && file_exists(public_path('storage/teachers/' . $t->photo)))
+                                                @if($t->photo && file_exists(public_path('storage/' . $t->photo)))
                                                     <img
                                                         src="{{ asset('storage/'.$t->photo) }}"
                                                         alt="{{ $t->localized['first_name'] ?? $t->first_name }}"
@@ -115,7 +115,7 @@
                                         </td>
 
                                         {{-- Actions --}}
-                                        <x-admin.tables.actions :id="'{{$t->id}}'" :page="'teachers'" />
+                                        <x-admin.tables.actions :id="$t->id" :page="'teachers'" />
                                     </tr>
                                 @empty
                                     <tr>

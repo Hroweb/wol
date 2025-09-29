@@ -11,7 +11,7 @@
 
         <div class="space-y-5 sm:space-y-6">
 
-            <form action="{{ route('admin.teachers.store') }}" method="POST" enctype="multipart/form-data" onsubmit="cleanEmptyTranslations(this)">
+            <form action="{{ route('admin.teachers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @include('admin.teachers.partials._base')
                 @include('admin.teachers.partials._translatable', ['locales' => App\Helpers\Helper::getLocales()])
