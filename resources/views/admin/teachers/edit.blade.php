@@ -18,9 +18,8 @@
                 @include('admin.teachers.partials._base', ['teacher' => $teacher])
                 @include('admin.teachers.partials._translatable', ['locales' => App\Helpers\Helper::getLocales(), 'teacher' => $teacher])
 
-                <div class="mt-6">
+                <div class="mt-6 flex justify-end">
                     <x-primary-button class="px-8" type="submit">{{ __('Update') }}</x-primary-button>
-                    <a class="ml-3 text-gray-600 hover:underline" href="{{ route('admin.teachers.index') }}">{{ __('Cancel') }}</a>
                 </div>
             </form>
 
