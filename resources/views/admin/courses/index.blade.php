@@ -68,9 +68,9 @@
                                         </td>
 
                                         {{-- Description --}}
-                                        <td class="px-5 py-4 whitespace-nowrap">
+                                        <td class="w-[30%] px-5 py-4 whitespace-nowrap">
                                             <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                {{$c->localized['description']}}
+                                                {{$c->localized['description'] ?? $c->description}}
                                             </span>
                                         </td>
 
@@ -103,7 +103,7 @@
                                         </td>
 
                                         {{-- Actions --}}
-                                        <x-admin.tables.actions :id="'{{$c->id}}'" :page="'courses'" />
+                                        <x-admin.tables.actions :id="$c->id" :page="'courses'" />
                                     </tr>
                                 @empty
                                     <tr>

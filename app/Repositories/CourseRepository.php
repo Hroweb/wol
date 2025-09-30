@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Course;
+use Illuminate\Support\Facades\DB;
 
 class CourseRepository
 {
@@ -72,6 +73,57 @@ class CourseRepository
         }
 
         return $q->paginate($perPage)->withQueryString();
+    }
+
+    public function createWithTranslations(array $baseData, array $translations): Course
+    {
+        return DB::transaction(function () use ($baseData, $translations) {
+            /** @var Course $course */
+            $course = Course::create($baseData);
+            $prepared = collect($translations)
+                ->map(function ($t) {
+                    return [
+                        'locale' => $t['locale'],
+                        'title' => $t['title'] ?? '',
+                        'slug' => $t['slug'] ?? null,
+                        'description' => $t['description'] ?? null,
+                        'curriculum_pdf_url' => $t['curriculum_pdf_url'] ?? null,
+                        'welcome_video_url' => $t['welcome_video_url'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                })->all();
+
+            $course->translations()->createMany($prepared);
+            return $course->load('translations');
+        });
+    }
+
+    public function updateWithTranslations(Course $course, array $baseData, array $translations): Course
+    {
+        return DB::transaction(function () use ($course, $baseData, $translations) {
+            $course->update($baseData);
+
+            // Delete existing translations
+            $course->translations()->delete();
+
+            $prepared = collect($translations)
+                ->map(function ($t) {
+                    return [
+                        'locale' => $t['locale'],
+                        'title' => $t['title'] ?? '',
+                        'slug' => $t['slug'] ?? null,
+                        'description' => $t['description'] ?? null,
+                        'curriculum_pdf_url' => $t['curriculum_pdf_url'] ?? null,
+                        'welcome_video_url' => $t['welcome_video_url'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                })->all();
+
+            $course->translations()->createMany($prepared);
+            return $course->load('translations');
+        });
     }
 
     private function queryWithTranslations(string $locale, string $fallback): \Illuminate\Database\Eloquent\Builder

@@ -51,6 +51,7 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
         --color-gray-900: #101828;
         --color-black: #101828;
         --color-white: #ffffff;
+        --color-ghostwhite: #f8f8ff;
         --spacing: 0.25rem;
         --container-xs: 20rem;
         --container-md: 28rem;
@@ -855,6 +856,9 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
     .w-\[23\%\] {
         width: 23%;
     }
+    .w-\[30\%\] {
+        width: 30%;
+    }
     .w-\[46px\] {
         width: 46px;
     }
@@ -1537,6 +1541,9 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
     }
     .bg-white {
         background-color: var(--color-white);
+    }
+    .bg-ghostwhite {
+        background-color: var(--color-ghostwhite);
     }
     .bg-none {
         background-image: none;
@@ -3622,7 +3629,7 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
         position: relative;
         z-index: var(--z-index-1);
         background-color: var(--color-gray-50);
-        font-family: var(--font-outfit);
+        font-family: var(--font-montserrat), serif;
         font-size: var(--text-base);
         line-height: var(--tw-leading, var(--text-base--line-height));
         --tw-font-weight: var(--font-weight-normal);
@@ -3637,6 +3644,9 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
         display: none;
         -webkit-appearance: none;
     }
+}
+.border-top-radius {
+    border-radius: 1rem 1rem 0 0;
 }
 .sidebar:hover {
     width: 290px;
