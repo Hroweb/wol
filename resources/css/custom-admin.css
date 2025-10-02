@@ -1,2 +1,155 @@
 @import "./admin.css";
 
+/* WordPress-like Course Layout Styles */
+.course-edit-layout {
+    display: flex;
+    gap: 1.5rem;
+    flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+    .course-edit-layout {
+        flex-direction: row;
+    }
+}
+
+.course-main-content {
+    flex: 2;
+    min-width: 0;
+}
+
+.course-sidebar {
+    flex: 1;
+    min-width: 0;
+}
+
+.course-sidebar .wp-metabox {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.course-sidebar .wp-metabox-header {
+    background: #f6f7f7;
+    border-bottom: 1px solid #c3c4c7;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #1d2327;
+}
+
+.course-sidebar .wp-metabox-content {
+    padding: 1rem;
+}
+
+.course-users-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.course-user-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f0f0f1;
+    transition: background-color 0.15s ease;
+}
+
+.course-user-item:hover {
+    background-color: #f6f7f7;
+}
+
+.course-user-item:last-child {
+    border-bottom: none;
+}
+
+.course-user-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: #2271b1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+}
+
+.course-user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.course-user-name {
+    font-weight: 500;
+    color: #1d2327;
+    font-size: 0.875rem;
+    margin-bottom: 0.125rem;
+}
+
+.course-user-email {
+    color: #646970;
+    font-size: 0.8125rem;
+}
+
+.course-user-status {
+    margin-left: 0.75rem;
+    flex-shrink: 0;
+}
+
+.course-user-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.course-user-status-badge.enrolled {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.course-user-status-badge.pending {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.course-user-status-badge.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.course-users-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #646970;
+}
+
+.course-users-empty-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    background-color: #f0f0f1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8c8f94;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+    .course-edit-layout {
+        flex-direction: column;
+    }
+
+    .course-sidebar {
+        order: -1;
+    }
+}

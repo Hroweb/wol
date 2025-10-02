@@ -43,37 +43,37 @@ class Helper
                 'name' => 'Teachers',
                 'icon' => 'teachers-icon',
                 'uri' => route('admin.teachers.index'),
-                'route_name' => 'admin.teachers.index',
+                'route_name' => 'admin.teachers',
             ],
             [
-                'name' => 'Lessons',
+                'name' => 'Courses',
                 'icon' => 'lessons-icon',
                 'uri' => route('admin.courses.index'),
-                'route_name' => 'admin.courses.index',
+                'route_name' => 'admin.courses',
             ],
             [
                 'name' => 'Students',
                 'icon' => 'students-icon',
                 'uri' => route('admin.students.index'),
-                'route_name' => 'admin.students.index',
+                'route_name' => 'admin.students',
             ],
             [
                 'name' => 'Announcements',
                 'icon' => 'announcements-icon',
                 'uri' => 'announcements',
-                'route_name' => 'admin.announcements.index',
+                'route_name' => 'admin.announcements',
             ],
             [
                 'name' => 'News',
                 'icon' => 'news-icon',
                 'uri' => 'news',
-                'route_name' => 'admin.news.index',
+                'route_name' => 'admin.news',
             ]
         ];
 
         // Filter only existing icons
         foreach ($items as &$item) {
-            $viewPath = 'components.dashboard.svgs.' . $item['icon'];
+            $viewPath = 'components.admin.svgs.' . $item['icon'];
             if (!View::exists($viewPath)) {
                 $item['icon'] = null;
             }

@@ -13,9 +13,16 @@
 
             <form action="{{ route('admin.teachers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @include('admin.teachers.partials._base')
-                @include('admin.teachers.partials._translatable', ['locales' => App\Helpers\Helper::getLocales()])
-
+                <div class="course-edit-layout">
+                    {{-- Left Sidebar: Users and Translatable Content --}}
+                    <div class="course-main-content space-y-6">
+                        @include('admin.teachers.partials._translatable', ['locales' => App\Helpers\Helper::getLocales()])
+                    </div>
+                    {{-- Right Sidebar: Basic Fields --}}
+                    <div class="course-sidebar">
+                        @include('admin.teachers.partials._base')
+                    </div>
+                </div>
                 <div class="mt-6 flex justify-end">
                     <x-primary-button class="px-8" type="submit">{{ __('Save') }}</x-primary-button>
                 </div>

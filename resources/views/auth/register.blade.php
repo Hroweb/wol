@@ -4,7 +4,7 @@
 
     <div class="flex w-full min-h-screen">
         <!-- Left visual panel -->
-        <div class="hidden md:block w-1/2 bg-blue-900"></div>
+        <div class="hidden md:block w-1/2 bg-[#101828]"></div>
 
         <!-- Right form panel -->
         <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-6">
@@ -110,14 +110,14 @@
 
                 <!-- Submit -->
                 <x-primary-button
-                    class="mt-8 w-full h-11 rounded-full text-white bg-blue-500 hover:opacity-90 transition-opacity justify-center">
+                    class="mt-8 w-full h-11 rounded-full text-white bg-[#101828] hover:opacity-90 transition-opacity justify-center">
                     {{ __('Sign up') }}
                 </x-primary-button>
 
                 <!-- Login link -->
                 <p class="text-gray-500/90 text-sm mt-4">
                     {{ __('Already have an account?') }}
-                    <a class="text-blue-400 hover:underline" href="{{ route('login') }}">
+                    <a class="text-[#101828] hover:underline" href="{{ route('login') }}">
                         {{ __('Sign in') }}
                     </a>
                 </p>
