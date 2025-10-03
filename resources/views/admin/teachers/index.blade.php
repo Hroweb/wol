@@ -49,7 +49,7 @@
                                                 >
                                                 <span
                                                     class="flex h-5 w-5 items-center justify-center rounded-sm border-[1.25px]"
-                                                    :class="isSelected({{ $t->id }}) ? 'border-brand-500 bg-brand-500' : 'bg-transparent border-gray-300 dark:border-gray-700'"
+                                                    :class="isSelected({{ $t->id }}) ? 'bg-blue-button bg-blue-border' : 'bg-transparent border-gray-300 dark:border-gray-700'"
                                                 >
                                                         <span :class="isSelected({{ $t->id }}) ? '' : 'opacity-0'">
                                                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">

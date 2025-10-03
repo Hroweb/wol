@@ -52,7 +52,7 @@
                     >
                     <span
                         class="flex h-5 w-5 items-center justify-center rounded-sm border-[1.25px]"
-                        :class="featured ? 'border-brand-500 bg-brand-500' : 'border-gray-300 dark:border-gray-700'"
+                        :class="featured ? 'bg-blue-button bg-blue-border' : 'border-gray-300 dark:border-gray-700'"
                         aria-hidden="true"
                     >
                         <span :class="featured ? 'opacity-100' : 'opacity-0'" class="transition-opacity">

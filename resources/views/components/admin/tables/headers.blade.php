@@ -11,7 +11,7 @@
                     :checked="isAllSelected()"
                 >
                 <span
-                    :class="isAllSelected() ? 'border-brand-500 bg-brand-500' : 'bg-transparent border-gray-300 dark:border-gray-700'"
+                    :class="isAllSelected() ? 'bg-blue-button bg-blue-border' : 'bg-transparent border-gray-300 dark:border-gray-700'"
                     class="w-5 h-5 flex items-center justify-center rounded-sm border-[1.25px]"
                 >
                     <span :class="isAllSelected() ? '' : 'opacity-0'">
