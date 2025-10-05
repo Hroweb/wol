@@ -47,9 +47,15 @@ class Helper
             ],
             [
                 'name' => 'Courses',
-                'icon' => 'lessons-icon',
+                'icon' => 'courses-icon',
                 'uri' => route('admin.courses.index'),
                 'route_name' => 'admin.courses',
+            ],
+            [
+                'name' => 'Lessons',
+                'icon' => 'lessons-icon',
+                'uri' => route('admin.lessons.index'),
+                'route_name' => 'admin.lessons',
             ],
             [
                 'name' => 'Students',

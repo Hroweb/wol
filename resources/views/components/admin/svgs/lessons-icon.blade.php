@@ -1,9 +1,15 @@
-<svg
-    class="{{ $isActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
-    width="24"
-    height="24"
-    viewBox="0 0 640 640"
-    xmlns="http://www.w3.org/2000/svg"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+     fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="Library"
+     width="24"
+     height="24"
+     class="{{ $isActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
 >
-    <path d="M192 576C139 576 96 533 96 480L96 160C96 107 139 64 192 64L496 64C522.5 64 544 85.5 544 112L544 400C544 420.9 530.6 438.7 512 445.3L512 512C529.7 512 544 526.3 544 544C544 561.7 529.7 576 512 576L192 576zM192 448C174.3 448 160 462.3 160 480C160 497.7 174.3 512 192 512L448 512L448 448L192 448zM288 144L288 192L240 192C231.2 192 224 199.2 224 208L224 240C224 248.8 231.2 256 240 256L288 256L288 368C288 376.8 295.2 384 304 384L336 384C344.8 384 352 376.8 352 368L352 256L400 256C408.8 256 416 248.8 416 240L416 208C416 199.2 408.8 192 400 192L352 192L352 144C352 135.2 344.8 128 336 128L304 128C295.2 128 288 135.2 288 144z"/>
+    <!-- two books -->
+    <rect x="5.5" y="3" width="5" height="18" rx="1.2"/>
+    <rect x="13.5" y="3" width="5" height="18" rx="1.2"/>
+    <!-- spine details -->
+    <path d="M7.2 7h2.6M7.2 10h2.6"/>
+    <path d="M15.2 7h2.6M15.2 10h2.6"/>
 </svg>

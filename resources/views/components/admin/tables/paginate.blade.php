@@ -34,8 +34,8 @@
                     <a href="{{ $paginator->appends($append)->url($page) }}"
                        class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium
                        {{ $page === $current
-                           ? 'bg-brand-500 text-white'
-                           : 'text-gray-700 hover:bg-brand-500 hover:text-white dark:text-gray-400 dark:hover:text-white' }}">
+                           ? 'bg-blue-button text-white'
+                           : 'text-gray-700 hover:bg-blue-button hover:text-white dark:text-gray-400 dark:hover:text-white' }}">
                         {{ $page }}
                     </a>
                 </li>

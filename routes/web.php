@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\StudentsController;
 use App\Http\Controllers\Admin\CoursesController;
+use App\Http\Controllers\Admin\LessonsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +27,13 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/courses/{course}/edit', [CoursesController::class, 'edit'])->name('courses.edit');
     Route::put('/courses/{course}', [CoursesController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{course}', [CoursesController::class, 'destroy'])->name('courses.destroy');
+
+    Route::get('/lessons', [LessonsController::class, 'index'])->name('lessons.index');
+    Route::get('/lessons/create', [LessonsController::class, 'create'])->name('lessons.create');
+    Route::post('/lessons', [LessonsController::class, 'store'])->name('lessons.store');
+    Route::get('/lessons/{lesson}/edit', [LessonsController::class, 'edit'])->name('lessons.edit');
+    Route::put('/lessons/{lesson}', [LessonsController::class, 'update'])->name('lessons.update');
+    Route::delete('/lessons/{lesson}', [LessonsController::class, 'destroy'])->name('lessons.destroy');
 
     Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
 });

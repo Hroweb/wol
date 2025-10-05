@@ -13,6 +13,7 @@
     fill="none" stroke="currentColor" stroke-width="1.6"
     stroke-linecap="round" stroke-linejoin="round"
     role="img" aria-label="Mentor / Pastor"
+    class="{{ $isActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
 >
     <title>Mentor / Pastor</title>
     <!-- Head -->
