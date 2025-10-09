@@ -148,9 +148,9 @@ class LessonRepository
             ->map(function ($t) {
                 return [
                     'locale' => $t['locale'],
-                    'title' => $t['title'] ?? '',
-                    'description' => $t['description'] ?? null,
-                    'materials' => $t['materials'] ?? null,
+                    'title' => $t['title'] ?? false,
+                    'description' => $t['description'] ?? false,
+                    'materials' => $t['materials'] ?? false,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];

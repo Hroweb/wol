@@ -95,14 +95,14 @@
 
                                         {{-- Position --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            <span class="{{ \App\Helpers\Helper::translationClass($t->localized['position']) }}">
                                                 {{ $t->localized['position'] ?? $t->position }}
                                             </span>
                                         </td>
 
                                         {{-- Church Name --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            <span class="{{ \App\Helpers\Helper::translationClass($t->localized['church_name']) }}">
                                                 {{ $t->localized['church_name'] ?? $t->church_name }}
                                             </span>
                                         </td>

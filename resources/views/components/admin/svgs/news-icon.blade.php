@@ -2,6 +2,8 @@
     class="{{ $isActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
     width="24"
     height="24"
+    fill="none"
+    stroke="currentColor"
     viewBox="0 0 640 640"
     xmlns="http://www.w3.org/2000/svg"
 >

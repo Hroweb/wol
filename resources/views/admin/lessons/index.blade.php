@@ -62,21 +62,21 @@
 
                                         {{-- Title --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            <span class="{{ \App\Helpers\Helper::translationClass($l->localized['title']) }}">
                                                 {{$l->localized['title']}}
                                             </span>
                                         </td>
 
                                         {{-- Description --}}
                                         <td class="w-[30%] px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            <span class="{{ \App\Helpers\Helper::translationClass($l->localized['description']) }}">
                                                 {{$l->localized['description'] ?? ''}}
                                             </span>
                                         </td>
 
                                         {{-- Course --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            <span class="{{ \App\Helpers\Helper::translationClass($l->course->localized['title']) }}">
                                                 {{$l->course->localized['title'] ?? $l->course->id}}
                                             </span>
                                         </td>

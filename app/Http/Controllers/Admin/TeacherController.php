@@ -16,7 +16,7 @@ class TeacherController extends Controller
         $allowedSorts = ['name', 'email', 'position', 'created_at', 'id'];
         $order = Helper::sortableOrder($request->query('sort'), $request->query('dir'), $allowedSorts);
 
-        $teachers = $service->list(10, 'en', $order);
+        $teachers = $service->list(10, 'hy', $order);
 
         return view('admin.teachers.index', compact('teachers'));
     }

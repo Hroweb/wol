@@ -62,14 +62,14 @@
 
                                         {{-- Title --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            <span class="{{ \App\Helpers\Helper::translationClass($c->localized['title']) }}">
                                                 {{$c->localized['title']}}
                                             </span>
                                         </td>
 
                                         {{-- Description --}}
-                                        <td class="w-[30%] px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                        <td class="w-[23%] px-5 py-4 whitespace-nowrap">
+                                            <span class="{{ \App\Helpers\Helper::translationClass($c->localized['description']) }}">
                                                 {{$c->localized['description'] ?? $c->description}}
                                             </span>
                                         </td>
@@ -83,7 +83,7 @@
 
                                         {{-- Academic Year --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                <span class="{{ \App\Helpers\Helper::translationClass($c->academic_year) }}">
                                                     {{$c->academic_year}}
                                                 </span>
                                         </td>

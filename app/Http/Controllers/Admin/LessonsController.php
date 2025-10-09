@@ -16,7 +16,7 @@ class LessonsController extends Controller
         $allowedSorts = ['title', 'description', 'lesson_date', 'created_at', 'id'];
         $order = Helper::sortableOrder($request->query('sort'), $request->query('dir'), $allowedSorts);
 
-        $lessons = $service->list(10, false, $order);
+        $lessons = $service->list(10, 'hy', $order);
         return view('admin.lessons.index', compact('lessons'));
     }
 

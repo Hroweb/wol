@@ -8,7 +8,19 @@ class Helper
 {
     public static function getAuthFullName($data): string
     {
-        return "{$data['first_name']} {$data['last_name']}" ?? '';
+        $first = $data['first_name'] ?? '';
+        $last  = $data['last_name'] ?? '';
+
+        // If both are missing or equal to "No translation available"
+        if (
+            $first === 'No translation available' ||
+            $last === 'No translation available' ||
+            ($first === '' && $last === '')
+        ) {
+            return 'No translation available';
+        }
+
+        return trim("{$first} {$last}");
     }
 
     public static function convertDate($datetime): string
@@ -92,4 +104,13 @@ class Helper
     {
         return ['en' => 'English', 'hy' => 'Armenian'];
     }
+
+    public static function translationClass(?string $value): string
+    {
+        $value = trim((string) $value);
+        return $value === '' || $value === 'No translation available'
+            ? 'text-xs text-red-button'
+            : 'text-sm font-medium text-gray-700 dark:text-gray-400';
+    }
+
 }

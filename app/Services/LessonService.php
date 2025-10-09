@@ -4,52 +4,23 @@ namespace App\Services;
 
 use App\Models\Lesson;
 use App\Repositories\LessonRepository;
+use App\Traits\LocalizedServiceTrait;
 
 class LessonService
 {
-    public function __construct(private LessonRepository $repo) {}
+    use LocalizedServiceTrait;
+    public function __construct(private readonly LessonRepository $repo) {}
 
     public function list(int $perPage = 10, ?string $locale = null, $order=[]): \Illuminate\Pagination\LengthAwarePaginator
     {
         [$loc, $fallback] = $this->resolveLocale($locale);
         $paginator = $this->repo->paginateWithTranslations($perPage, $fallback, $loc, $order);
         $paginator->through(function (Lesson $l) use ($loc, $fallback) {
-            $this->attachLocalized($l, $loc, $fallback);
-            $this->attachCourseLocalized($l, $loc, $fallback);
+            $this->attachLocalized($l, $loc, $fallback, ['title', 'description', 'materials']);
+            $this->attachRelatedLocalized($l, 'course', $loc, $fallback, ['title', 'description', 'slug']);
             return $l;
         });
         return $paginator;
-    }
-
-    private function resolveLocale(?string $locale): array
-    {
-        return [$locale ?? app()->getLocale(), config('app.fallback_locale')];
-    }
-
-    private function attachLocalized(Lesson $lesson, string $locale, string $fallback): void
-    {
-        $translation = $lesson->translations()->firstWhere('locale', $locale)
-            ?? $lesson->translations()->firstWhere('locale', $fallback);
-
-        $lesson->localized = [
-            'title' => $translation->title ?? '',
-            'description' => $translation->description ?? '',
-            'materials' => $translation->materials ?? '',
-        ];
-    }
-
-    private function attachCourseLocalized(Lesson $lesson, string $locale, string $fallback): void
-    {
-        if ($lesson->course) {
-            $courseTranslation = $lesson->course->translations()->firstWhere('locale', $locale)
-                ?? $lesson->course->translations()->firstWhere('locale', $fallback);
-
-            $lesson->course->localized = [
-                'title' => $courseTranslation->title ?? '',
-                'description' => $courseTranslation->description ?? '',
-                'slug' => $courseTranslation->slug ?? '',
-            ];
-        }
     }
 
     public function getCreateData(): array

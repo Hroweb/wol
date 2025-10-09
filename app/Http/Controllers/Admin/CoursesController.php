@@ -16,7 +16,7 @@ class CoursesController extends Controller
         $allowedSorts = ['title', 'slug', 'description', 'start_date', 'end_date', 'id'];
         $order = Helper::sortableOrder($request->query('sort'), $request->query('dir'), $allowedSorts);
 
-        $courses = $service->list(10, 'en', $order);
+        $courses = $service->list(10, 'hy', $order);
         return view('admin.courses.index', compact('courses'));
     }
 
