@@ -1,9 +1,16 @@
-<svg
-    class="{{ $isActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
-    width="24"
-    height="24"
-    viewBox="0 0 640 640"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path d="M525.2 82.9C536.7 88 544 99.4 544 112L544 528C544 540.6 536.7 552 525.2 557.1C513.7 562.2 500.4 560.3 490.9 552L444.3 511.3C400.7 473.2 345.6 451 287.9 448.3L287.9 544C287.9 561.7 273.6 576 255.9 576L223.9 576C206.2 576 191.9 561.7 191.9 544L191.9 448C121.3 448 64 390.7 64 320C64 249.3 121.3 192 192 192L276.5 192C338.3 191.8 397.9 169.3 444.4 128.7L491 88C500.4 79.7 513.9 77.8 525.3 82.9zM288 384L288 384.2C358.3 386.9 425.8 412.7 480 457.6L480 182.3C425.8 227.2 358.3 253 288 255.7L288 384z"/>
+<!-- Announcements Icon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+     aria-labelledby="title" role="img">
+    <title id="title">Announcements</title>
+
+    <!-- Megaphone body -->
+    <path d="M3 11V8a1 1 0 0 1 1-1h2l8-3v14l-8-3H4a1 1 0 0 1-1-1v-3z"/>
+
+    <!-- Handle -->
+    <path d="M7 14v3.5a2.5 2.5 0 0 0 5 0V14"/>
+
+    <!-- Sound waves -->
+    <path d="M17 9a3 3 0 0 1 0 6"/>
+    <path d="M19.5 7.5a5 5 0 0 1 0 9"/>
 </svg>

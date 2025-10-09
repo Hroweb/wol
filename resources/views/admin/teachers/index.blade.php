@@ -81,7 +81,7 @@
 
                                         {{-- Name --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                            <span class="{{\App\Helpers\Helper::translationClass(\App\Helpers\Helper::getAuthFullName($t->localized))}}">
                                                 {{ \App\Helpers\Helper::getAuthFullName($t->localized) }}
                                             </span>
                                         </td>

@@ -17,9 +17,9 @@
                             </div>
                         </div>
                         <div class="course-user-status">
-                                                <span class="course-user-status-badge {{ $user->pivot->status }}">
-                                                    {{ ucfirst($user->pivot->status) }}
-                                                </span>
+                            <span class="course-user-status-badge {{ $user->pivot->status }}">
+                                {{ ucfirst($user->pivot->status) }}
+                            </span>
                             @if($user->pivot->enrolled_at)
                                 <div class="text-xs text-gray-500 mt-1">
                                     {{ \App\Helpers\Helper::convertDate($user->pivot->enrolled_at) }}

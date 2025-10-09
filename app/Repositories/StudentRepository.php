@@ -70,4 +70,23 @@ class StudentRepository
     {
         return User::where('role', 'student')->find($id);
     }
+
+    /** Create a new student */
+    public function create(array $data): User
+    {
+        return User::create($data);
+    }
+
+    /** Update an existing student */
+    public function update(User $student, array $data): User
+    {
+        $student->update($data);
+        return $student->fresh();
+    }
+
+    /** Delete a student */
+    public function delete(User $student): bool
+    {
+        return $student->delete();
+    }
 }

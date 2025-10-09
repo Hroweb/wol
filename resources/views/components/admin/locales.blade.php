@@ -1,6 +1,6 @@
 @props(['locales' => [], 'group' => 'Additional Fields', 'count' => false])
 
-<div class="px-5 py-3 sm:px-6 sm:py-4 flex justify-between items-center border-top-radius bg-ghostwhite dark:bg-gray-dark">
+<div class="px-5 py-3 sm:px-6 sm:py-4 flex items-center border-top-radius bg-ghostwhite dark:bg-gray-dark">
     <h3 class="py-1 text-base font-medium text-gray-800 dark:text-white/90">{{ $group }}</h3>
     @if(!empty($locales))
         <nav class="m-0! flex space-x-2 overflow-x-auto [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 dark:[&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1.5">
@@ -14,6 +14,6 @@
     @endif
 
     @if(false !== $count)
-        <span class="text-sm text-error-500">({{$count}})</span>
+        <span class="text-sm">&nbsp;({{$count}})</span>
     @endif
 </div>

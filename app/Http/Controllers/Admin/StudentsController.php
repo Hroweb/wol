@@ -4,6 +4,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreStudentRequest;
+use App\Models\User;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
 
@@ -32,5 +34,55 @@ class StudentsController extends Controller
         );
 
         return view('admin.students.index', compact('students', 'q', 'sort', 'dir'));
+    }
+
+    /* Create */
+    public function create(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory
+    {
+        return view('admin.students.create');
+    }
+
+    public function store(StoreStudentRequest $request, StudentService $service): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validated();
+        $student = $service->store($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json($student, 201);
+        }
+
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Student created successfully');
+    }
+
+    /* Edit */
+    public function edit(User $student): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    {
+        return view('admin.students.edit', compact('student'));
+    }
+
+    public function update(StoreStudentRequest $request, StudentService $service, User $student): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validated();
+        $service->update($student, $validated);
+
+        if ($request->wantsJson()) {
+            return response()->json($student->fresh(), 200);
+        }
+
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Student updated successfully');
+    }
+
+    public function destroy(User $student): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+    {
+        $student->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Student deleted successfully'], 200);
+        }
+
+        return redirect()->route('admin.students.index')
+            ->with('success', 'Student deleted successfully');
     }
 }

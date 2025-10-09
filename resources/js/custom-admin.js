@@ -5,7 +5,6 @@ window.Alpine = Alpine;
 
 // A tiny, reusable selection store for tables
 // Usage: x-data="tableSelect({ items: [1,2,3] })"
-
 document.addEventListener('alpine:init', () => {
     Alpine.data('tableSelect', (config = {}) => {
         const norm = (items) => {
@@ -60,6 +59,42 @@ document.addEventListener('alpine:init', () => {
                     count: this.selected.length,
                 });
             },
+        };
+    });
+
+    // Photo Upload with Live Preview
+    Alpine.data('photoUpload', () => {
+        return {
+            previewUrl: null,
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file.');
+                        return;
+                    }
+
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB.');
+                        return;
+                    }
+
+                    // Create preview URL
+                    this.previewUrl = URL.createObjectURL(file);
+                } else {
+                    this.previewUrl = null;
+                }
+            },
+
+            // Clean up object URL when component is destroyed
+            destroy() {
+                if (this.previewUrl) {
+                    URL.revokeObjectURL(this.previewUrl);
+                }
+            }
         };
     });
 });

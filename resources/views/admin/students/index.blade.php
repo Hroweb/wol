@@ -18,7 +18,7 @@
                     :slug="'I am the good shepherd. The good shepherd lays down his life for the sheep'"
                     :export="true"
                     :addNew="true"
-                    :page="'user'"
+                    :page="'students'"
                 />
 
                 <div class="custom-scrollbar overflow-x-auto">
@@ -98,7 +98,7 @@
                                     </td>
 
                                     {{-- Actions --}}
-                                    <x-admin.tables.actions :id="'{{$s->id}}'" :page="'user'" />
+                                    <x-admin.tables.actions :id="$s->id" :page="'students'" />
                                 </tr>
                             @empty
                                 <tr>

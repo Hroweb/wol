@@ -29,8 +29,8 @@
                             <table class="w-full table-auto">
                                 <thead>
                                 <x-admin.tables.headers
-                                    :columns="['Title', 'Description', 'Academic Year', 'Start Date', 'End Date', 'Actions']"
-                                    :sortable="['title', 'description', 'start_date', 'end_date', 'created_at']"
+                                    :columns="['Title', 'Academic Year', 'Students', 'Start Date', 'End Date', 'Actions']"
+                                    :sortable="['title', 'start_date', 'end_date', 'created_at']"
                                     :checkBox="true"
                                 />
                                 </thead>
@@ -68,17 +68,10 @@
                                         </td>
 
                                         {{-- Description --}}
-                                        <td class="w-[23%] px-5 py-4 whitespace-nowrap">
+                                        {{--<td class="w-[23%] px-5 py-4 whitespace-nowrap">
                                             <span class="{{ \App\Helpers\Helper::translationClass($c->localized['description']) }}">
                                                 {{$c->localized['description'] ?? $c->description}}
                                             </span>
-                                        </td>
-
-                                        {{-- Email --}}{{--
-                                        <td class="px-5 py-4 whitespace-nowrap">
-                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-
-                                                </span>
                                         </td>--}}
 
                                         {{-- Academic Year --}}
@@ -86,6 +79,15 @@
                                                 <span class="{{ \App\Helpers\Helper::translationClass($c->academic_year) }}">
                                                     {{$c->academic_year}}
                                                 </span>
+                                        </td>
+
+                                        {{-- Students Count --}}
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                                                    {{ $c->users->count() ?? 0 }} {{Str::plural('student', $c->users->count())}}
+                                                </span>
+                                            </div>
                                         </td>
 
                                         {{-- Start Date --}}

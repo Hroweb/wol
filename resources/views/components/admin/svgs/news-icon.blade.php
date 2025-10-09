@@ -1,11 +1,17 @@
-<svg
-    class="{{ $isActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
-    width="24"
-    height="24"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 640 640"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path d="M64 480L64 184C64 170.7 74.7 160 88 160C101.3 160 112 170.7 112 184L112 472C112 485.3 122.7 496 136 496C149.3 496 160 485.3 160 472L160 160C160 124.7 188.7 96 224 96L512 96C547.3 96 576 124.7 576 160L576 480C576 515.3 547.3 544 512 544L128 544C92.7 544 64 515.3 64 480zM224 192L224 256C224 273.7 238.3 288 256 288L320 288C337.7 288 352 273.7 352 256L352 192C352 174.3 337.7 160 320 160L256 160C238.3 160 224 174.3 224 192zM248 432C234.7 432 224 442.7 224 456C224 469.3 234.7 480 248 480L488 480C501.3 480 512 469.3 512 456C512 442.7 501.3 432 488 432L248 432zM224 360C224 373.3 234.7 384 248 384L488 384C501.3 384 512 373.3 512 360C512 346.7 501.3 336 488 336L248 336C234.7 336 224 346.7 224 360zM424 240C410.7 240 400 250.7 400 264C400 277.3 410.7 288 424 288L488 288C501.3 288 512 277.3 512 264C512 250.7 501.3 240 488 240L424 240z"/>
+<!-- News Icon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+     aria-labelledby="title" role="img">
+    <title id="title">News</title>
+    <!-- Newspaper outline -->
+    <rect x="3" y="4" width="18" height="16" rx="2" ry="2"/>
+    <!-- Headline title -->
+    <line x1="7" y1="8" x2="13" y2="8"/>
+    <!-- Subheadline -->
+    <line x1="7" y1="11" x2="17" y2="11"/>
+    <!-- Article lines -->
+    <line x1="7" y1="14" x2="17" y2="14"/>
+    <line x1="7" y1="17" x2="13" y2="17"/>
+    <!-- Thumbnail box -->
+    <rect x="15.5" y="7" width="4.5" height="4.5" rx="0.6"/>
 </svg>
