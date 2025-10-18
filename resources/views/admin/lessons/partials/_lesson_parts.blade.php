@@ -1,7 +1,7 @@
 <div class="mb-10 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
     <div class="flex items-center justify-between p-5 sm:p-6 border-b border-gray-100 dark:border-gray-800">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white">Lesson Parts</h3>
-        <button type="button" @click="addLessonPart()" x-show="lessonParts.length < 2" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <button type="button" @click="addLessonPart()" x-show="lessonParts.length < 2" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-button hover:bg-blue-button focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>

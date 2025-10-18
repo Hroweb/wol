@@ -17,7 +17,9 @@
         x-data="{ page: 'admin', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
         x-init="
              darkMode = JSON.parse(localStorage.getItem('darkMode'));
-             $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+             sidebarToggle = JSON.parse(localStorage.getItem('sidebarToggle'));
+             $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
+             $watch('sidebarToggle', value => localStorage.setItem('sidebarToggle', JSON.stringify(value)))"
         :class="{'dark bg-gray-900': darkMode === true}"
     >
         {{--Page preload--}}

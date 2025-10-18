@@ -3665,7 +3665,7 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
 .border-top-radius {
     border-radius: 1rem 1rem 0 0;
 }
-.sidebar:hover {
+/*.sidebar:hover {
     width: 290px;
 }
 .sidebar:hover .logo {
@@ -3695,7 +3695,7 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-}
+}*/
 .tableCheckbox:checked ~ span span {
     opacity: 100%;
 }
