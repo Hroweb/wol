@@ -112,12 +112,10 @@ class LessonRepository
             $preparedTranslations = $this->prepareTranslations($translations);
             $lesson->translations()->createMany($preparedTranslations);
 
-            // Create lesson parts
-            $preparedParts = $this->prepareLessonParts($parts);
+            // Create lesson parts with translations
+            $this->createLessonParts($lesson, $parts);
 
-            $lesson->parts()->createMany($preparedParts);
-
-            return $lesson->load(['translations', 'parts.teacher']);
+            return $lesson->load(['translations', 'parts.translations', 'parts.teacher']);
         });
     }
 
@@ -126,12 +124,18 @@ class LessonRepository
         $courses = Course::with('translations')->get();
         $teachers = Teacher::with('translations')->get();
 
-        // Process teachers data for JavaScript
-        $teachersData = $teachers->map(function($teacher) {
-            $translation = $teacher->translations->firstWhere('locale', 'en');
+        // Process teachers data for JavaScript with translations
+        $locales = \App\Helpers\Helper::getLocales();
+        $teachersData = $teachers->map(function($teacher) use ($locales) {
+            $names = [];
+            foreach ($locales as $locale => $label) {
+                $translation = $teacher->translations->firstWhere('locale', $locale);
+                $names[$locale] = ($translation ? $translation->first_name . ' ' . $translation->last_name : '') ?: 'Teacher ' . $teacher->id;
+            }
+
             return [
                 'id' => $teacher->id,
-                'name' => ($translation ? $translation->first_name . ' ' . $translation->last_name : '') ?: 'Teacher ' . $teacher->id
+                'name' => $names
             ];
         })->toArray();
 
@@ -146,14 +150,16 @@ class LessonRepository
     {
         return collect($translations)
             ->map(function ($t) {
-                return [
+                $arr = [
                     'locale' => $t['locale'],
-                    'title' => $t['title'] ?? false,
-                    'description' => $t['description'] ?? false,
-                    'materials' => $t['materials'] ?? false,
+                    'title' => $t['title'] ?? '',
+                    'description' => $t['description'] ?? '',
+                    //'materials' => isset($t['materials']) ? json_encode($t['materials']) : null,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
+                if(isset($t['materials'])) $arr['materials'] = json_encode($t['materials']);
+                return $arr;
             })->all();
     }
 
@@ -164,7 +170,6 @@ class LessonRepository
                 return [
                     'teacher_id' => $part['teacher_id'],
                     'part_number' => $part['part_number'],
-                    'audio_file_urls' => $part['audio_file_urls'] ?? null,
                     'duration_minutes' => $part['duration_minutes'] ?? null,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -178,20 +183,46 @@ class LessonRepository
             // Update the lesson
             $lesson->update($baseData);
 
-            // Delete existing translations and parts
-            $lesson->translations()->delete();
-            $lesson->parts()->delete();
+            // Update translations properly (update existing, create new, delete removed)
+            $this->updateLessonTranslations($lesson, $translations);
 
-            // Create new translations
-            $preparedTranslations = $this->prepareTranslations($translations);
-            $lesson->translations()->createMany($preparedTranslations);
+            // Update lesson parts and their translations
+            $this->updateLessonParts($lesson, $parts);
 
-            // Create new lesson parts
-            $preparedParts = $this->prepareLessonParts($parts);
-            $lesson->parts()->createMany($preparedParts);
-
-            return $lesson->load(['translations', 'parts.teacher']);
+            return $lesson->load(['translations', 'parts.translations', 'parts.teacher']);
         });
+    }
+
+    private function updateLessonTranslations(Lesson $lesson, array $translations): void
+    {
+        // Get existing translations
+        $existingTranslations = $lesson->translations()->get()->keyBy('locale');
+
+        foreach ($translations as $translationData) {
+            $locale = $translationData['locale'];
+
+            if ($existingTranslations->has($locale)) {
+                // Update existing translation
+                $translation = $existingTranslations[$locale];
+                $translation->update([
+                    'title' => $translationData['title'] ?? '',
+                    'description' => $translationData['description'] ?? '',
+                    'materials' => isset($translationData['materials']) ? json_encode($translationData['materials']) : $translation->materials,
+                ]);
+            } else {
+                // Create new translation
+                $lesson->translations()->create([
+                    'locale' => $locale,
+                    'title' => $translationData['title'] ?? '',
+                    'description' => $translationData['description'] ?? '',
+                    'materials' => isset($translationData['materials']) ? json_encode($translationData['materials']) : null,
+                ]);
+            }
+        }
+
+        // Delete translations that are no longer in the data
+        $newLocales = collect($translations)->pluck('locale')->toArray();
+        $lesson->translations()->whereNotIn('locale', $newLocales)->delete();
     }
 
     private function queryWithTranslations(string $locale, string $fallback): \Illuminate\Database\Eloquent\Builder
@@ -199,5 +230,74 @@ class LessonRepository
         return Lesson::with(['translations' => function ($q) use ($locale, $fallback) {
             $q->whereIn('locale', [$locale, $fallback]);
         }]);
+    }
+
+    private function createLessonParts(Lesson $lesson, array $parts): void
+    {
+        if (empty($parts)) {
+            return;
+        }
+
+        foreach ($parts as $partData) {
+            // Create the lesson part
+            $lessonPart = $lesson->parts()->create($this->makePartAttributes($partData));
+
+            // Create translations for this part
+            $this->syncPartTranslations($lessonPart, $partData['translations'] ?? []);
+        }
+    }
+
+    private function updateLessonParts(Lesson $lesson, array $parts): void
+    {
+        if (empty($parts)) {
+            return;
+        }
+
+        // Get existing parts
+        $existingParts = $lesson->parts()->with('translations')->get()->keyBy('part_number');
+
+        foreach ($parts as $partData) {
+            $partNumber = $partData['part_number'];
+
+            if ($existingParts->has($partNumber)) {
+                // Update existing part
+                $lessonPart = $existingParts[$partNumber];
+                $lessonPart->update($this->makePartAttributes($partData));
+
+                // Update translations
+                $this->syncPartTranslations($lessonPart, $partData['translations'] ?? []);
+            } else {
+                // Create new part
+                $lessonPart = $lesson->parts()->create($this->makePartAttributes($partData));
+
+                // Create translations for this part
+                $this->syncPartTranslations($lessonPart, $partData['translations'] ?? []);
+            }
+        }
+
+        // Delete parts that are no longer in the data
+        $newPartNumbers = collect($parts)->pluck('part_number')->toArray();
+        $lesson->parts()->whereNotIn('part_number', $newPartNumbers)->delete();
+    }
+
+    private function makePartAttributes(array $partData): array
+    {
+        return [
+            'teacher_id' => $partData['teacher_id'],
+            'part_number' => $partData['part_number'],
+            'duration_minutes' => $partData['duration_minutes'] ?? null,
+        ];
+    }
+
+    private function syncPartTranslations(\App\Models\LessonPart $lessonPart, array $translations): void
+    {
+        // Replace all translations for the part with provided set
+        $lessonPart->translations()->delete();
+        foreach ($translations as $locale => $translationData) {
+            $lessonPart->translations()->create([
+                'locale' => $locale,
+                'audio_file' => $translationData['audio_file'] ?? null,
+            ]);
+        }
     }
 }

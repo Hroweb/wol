@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/lessons/{lesson}/edit', [LessonsController::class, 'edit'])->name('lessons.edit');
     Route::put('/lessons/{lesson}', [LessonsController::class, 'update'])->name('lessons.update');
     Route::delete('/lessons/{lesson}', [LessonsController::class, 'destroy'])->name('lessons.destroy');
+    Route::delete('/lessons/{lesson}/materials/{locale}/{index}', [LessonsController::class, 'deleteMaterial'])->name('lessons.materials.delete');
 
     Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
     Route::get('/students/create', [StudentsController::class, 'create'])->name('students.create');

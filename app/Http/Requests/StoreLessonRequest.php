@@ -28,11 +28,11 @@ class StoreLessonRequest extends FormRequest
             // Lesson translation fields - only require if the translation has content
             'translations.en.title' => ['nullable', 'string', 'max:255'],
             'translations.en.description' => ['nullable', 'string'],
-            'translations.en.materials' => ['nullable', 'string'],
+//            'translations.en.materials' => ['nullable', 'string'],
 
             'translations.hy.title' => ['nullable', 'string', 'max:255'],
             'translations.hy.description' => ['nullable', 'string'],
-            'translations.hy.materials' => ['nullable', 'string'],
+//            'translations.hy.materials' => ['nullable', 'string'],
 
             // Lesson parts (dynamic array)
             'lesson_parts' => ['required', 'array', 'min:1', 'max:2'],
@@ -40,6 +40,11 @@ class StoreLessonRequest extends FormRequest
             'lesson_parts.*.part_number' => ['required', 'integer', 'min:1', 'max:2'],
             'lesson_parts.*.audio_file_urls' => ['nullable', 'string'],
             'lesson_parts.*.duration_minutes' => ['nullable', 'integer', 'min:1'],
+
+            // File upload validations - dynamic based on available locales
+            'translations.*.materials' => ['nullable', 'array'],
+            'translations.*.materials.*' => ['file', 'mimes:pdf', 'max:10240'], // 10MB max
+            'lesson_parts.*.translations.*.audio_file' => ['nullable', 'file', 'mimes:mp3', 'max:51200'], // 50MB max
         ];
     }
 

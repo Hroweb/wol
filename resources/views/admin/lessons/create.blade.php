@@ -16,7 +16,7 @@
                     {{-- Left Sidebar: Translatable Content --}}
                     <div class="course-main-content space-y-6">
                         @include('admin.lessons.partials._translatable', ['locales' => App\Helpers\Helper::getLocales()])
-                        @include('admin.lessons.partials._lesson_parts')
+                        @include('admin.lessons.partials._lesson_parts', ['locales' => App\Helpers\Helper::getLocales()])
                     </div>
                     {{-- Right Sidebar: Basic Fields and Lesson Parts --}}
                     <div class="course-sidebar">

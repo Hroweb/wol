@@ -43,13 +43,24 @@ return new class extends Migration
             $table->foreignId('teacher_id')->constrained('teachers')->restrictOnDelete();
 
             $table->unsignedTinyInteger('part_number');          // 1 or 2
-            $table->text('audio_file_urls')->nullable();         // one or more URLs
+//            $table->text('audio_file_urls')->nullable();         // one or more URLs
             $table->unsignedInteger('duration_minutes')->nullable();
             $table->timestamps();
 
             // Ensure one row per part for a lesson
             $table->unique(['lesson_id', 'part_number']);
             $table->index(['teacher_id']);
+        });
+
+        Schema::create('lesson_part_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('lesson_part_id')->constrained('lesson_parts')->cascadeOnDelete();
+            $table->string('locale', 5);
+            $table->string('audio_file')->nullable();
+            $table->timestamps();
+
+            $table->unique(['lesson_part_id', 'locale']);
+            $table->index('locale');
         });
     }
 

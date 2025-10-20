@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLessonRequest;
 use App\Models\Lesson;
+use App\Services\FileDeletionService;
 use App\Services\LessonService;
 use Illuminate\Http\Request;
 
@@ -40,6 +41,11 @@ class LessonsController extends Controller
 
     public function edit(Lesson $lesson, LessonService $service): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
+        $data = $service->getEditData($lesson);
+        return view('admin.lessons.edit', $data);
+    }
+    public function editz(Lesson $lesson, LessonService $service): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    {
         $data = $service->getCreateData();
         $lesson = $lesson->load(['translations', 'parts.teacher']);
 
@@ -71,8 +77,11 @@ class LessonsController extends Controller
         return redirect()->route('admin.lessons.index')->with('success', 'Lesson updated successfully');
     }
 
-    public function destroy(Lesson $lesson): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+    public function destroy(Lesson $lesson, FileDeletionService $fileDeletionService): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
     {
+        // Delete all lesson files before deleting the lesson
+        $fileDeletionService->deleteAllLessonFiles($lesson);
+
         $lesson->delete();
 
         if (request()->wantsJson()) {
@@ -80,5 +89,32 @@ class LessonsController extends Controller
         }
 
         return redirect()->route('admin.lessons.index')->with('success', 'Lesson deleted successfully');
+    }
+
+    public function deleteMaterial(Lesson $lesson, string $locale, int $index, FileDeletionService $fileDeletionService): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+    {
+        $translation = $lesson->translations()->where('locale', $locale)->first();
+
+        if (!$translation) {
+            if (request()->wantsJson()) {
+                return response()->json(['error' => 'Translation not found'], 404);
+            }
+            return redirect()->back()->with('error', 'Translation not found');
+        }
+
+        $success = $fileDeletionService->deleteMaterialFile($translation, $index);
+
+        if (!$success) {
+            if (request()->wantsJson()) {
+                return response()->json(['error' => 'Material not found'], 404);
+            }
+            return redirect()->back()->with('error', 'Material not found');
+        }
+
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Material deleted successfully'], 200);
+        }
+
+        return redirect()->back()->with('success', 'Material deleted successfully');
     }
 }

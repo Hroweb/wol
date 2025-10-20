@@ -851,6 +851,9 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
     .w-20 {
         width: calc(var(--spacing) * 20);
     }
+    .w-30 {
+        width: calc(var(--spacing) * 30);
+    }
     .w-40 {
         width: calc(var(--spacing) * 40);
     }
