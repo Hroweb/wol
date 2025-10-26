@@ -84,7 +84,7 @@
                                         {{-- Students Count --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium dark:text-gray-400">
                                                     {{ $c->users->count() ?? 0 }} {{Str::plural('student', $c->users->count())}}
                                                 </span>
                                             </div>
