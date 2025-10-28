@@ -62,6 +62,23 @@ return new class extends Migration
             $table->unique(['lesson_part_id', 'locale']);
             $table->index('locale');
         });
+
+        Schema::create('audio_upload_jobs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('lesson_id')->nullable()->constrained('lessons')->cascadeOnDelete();
+            $table->foreignId('lesson_part_id')->nullable()->constrained('lesson_parts')->cascadeOnDelete();
+            $table->string('locale', 5);
+            $table->string('original_filename');
+            $table->string('temp_path');
+            $table->string('final_path')->nullable();
+            $table->enum('status', ['pending', 'processing', 'completed', 'failed'])->default('pending');
+            $table->text('error_message')->nullable();
+            $table->integer('file_size')->nullable();
+            $table->timestamps();
+
+            $table->index(['lesson_id', 'status']);
+            $table->index(['status', 'created_at']);
+        });
     }
 
     public function down(): void
@@ -70,5 +87,7 @@ return new class extends Migration
         Schema::dropIfExists('lesson_parts');
         Schema::dropIfExists('lesson_translations');
         Schema::dropIfExists('lessons');
+        Schema::dropIfExists('audio_upload_jobs');
+
     }
 };

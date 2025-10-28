@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Lesson;
+use App\Models\LessonPart;
 use App\Models\LessonTranslation;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -63,7 +64,66 @@ class FileDeletionService
         return is_array($materials) ? $materials : [];
     }
 
-    private function deleteFileFromStorage(string $path): void
+    public function deleteAudioFiles(Lesson $lesson): void
+    {
+        foreach ($lesson->parts as $part) {
+            foreach ($part->translations as $translation) {
+                if ($translation->audio_file) {
+                    $this->deleteFileFromStorage($translation->audio_file);
+                }
+            }
+        }
+
+        // Clean up all related audio upload jobs for this lesson
+        \App\Models\AudioUploadJob::where('lesson_id', $lesson->id)->delete();
+    }
+
+    public function deletePartAudioFiles(\App\Models\LessonPart $part): void
+    {
+        foreach ($part->translations as $translation) {
+            if ($translation->audio_file) {
+                $this->deleteFileFromStorage($translation->audio_file);
+            }
+        }
+
+        // Clean up related audio upload jobs for this part
+        \App\Models\AudioUploadJob::where('lesson_part_id', $part->id)->delete();
+    }
+
+    public function deleteAudioFile(Lesson $lesson, int $partNumber, string $locale): bool
+    {
+        // Find the lesson part
+        $lessonPart = $lesson->parts()->where('part_number', $partNumber)->first();
+
+        if (!$lessonPart) {
+            return false;
+        }
+
+        // Find the translation for this part
+        $translation = $lessonPart->translations()->where('locale', $locale)->first();
+
+        if (!$translation) {
+            return false;
+        }
+
+        // Delete the audio file from storage
+        if ($translation->audio_file) {
+            $this->deleteFileFromStorage($translation->audio_file);
+
+            // Update the translation to remove the audio file path
+            $translation->update(['audio_file' => null]);
+        }
+
+        // Clean up any related audio upload jobs (completed or failed)
+        \App\Models\AudioUploadJob::where('lesson_part_id', $lessonPart->id)
+            ->where('locale', $locale)
+            ->whereIn('status', ['completed', 'failed'])
+            ->delete();
+
+        return true;
+    }
+
+    public function deleteFileFromStorage(string $path): void
     {
         try {
             Storage::disk('public')->delete($path);

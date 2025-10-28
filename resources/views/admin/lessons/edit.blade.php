@@ -162,6 +162,85 @@
                             });
                         });
                     });
+                },
+
+                playAudio(audioPath) {
+                    if (!audioPath) return;
+
+                    // Create audio element
+                    const audioUrl = '{{ url('storage') }}/' + audioPath;
+                    const audio = new Audio(audioUrl);
+
+                    // Create a simple modal to show audio controls
+                    const modal = document.createElement('div');
+                    modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center';
+                    modal.innerHTML = `
+                        <div class="relative p-8 bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Audio Player</h3>
+                                <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-500">
+                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <audio controls class="w-full" autoplay>
+                                <source src="${audioUrl}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    `;
+
+                    // Close on outside click
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.remove();
+                        }
+                    });
+
+                    document.body.appendChild(modal);
+                },
+
+                deleteAudio(partNumber, locale) {
+                    if (!confirm('Are you sure you want to delete this audio file?')) {
+                        return;
+                    }
+
+                    // Create form
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('admin.lessons.audio.delete', $lesson->id) }}'.replace(':partNumber', partNumber).replace(':locale', locale);
+
+                    // Add CSRF token
+                    const csrfField = document.createElement('input');
+                    csrfField.type = 'hidden';
+                    csrfField.name = '_token';
+                    csrfField.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfField);
+
+                    // Add method override for DELETE
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'DELETE';
+                    form.appendChild(methodField);
+
+                    // Add part number and locale
+                    const partField = document.createElement('input');
+                    partField.type = 'hidden';
+                    partField.name = 'part_number';
+                    partField.value = partNumber;
+                    form.appendChild(partField);
+
+                    const localeField = document.createElement('input');
+                    localeField.type = 'hidden';
+                    localeField.name = 'locale';
+                    localeField.value = locale;
+                    form.appendChild(localeField);
+
+                    // Submit the form
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             }
         }

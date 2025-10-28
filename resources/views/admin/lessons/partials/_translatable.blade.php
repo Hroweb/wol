@@ -26,7 +26,7 @@
                                         <div class="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
                                             <div class="flex items-center">
                                                 <x-admin.svgs.file-icon />
-                                                <span class="text-sm text-gray-600 dark:text-gray-400">{{ $file['name'] }}</span>
+                                                <span class="text-xs text-gray-600 dark:text-gray-400">{{ $file['name'] }}</span>
                                                 <span class="text-xs text-gray-500 ml-2">&nbsp;({{ number_format($file['size'] / 1024, 1) }} KB)</span>
                                             </div>
                                             <div class="flex items-center space-x-2 justify-between w-30">

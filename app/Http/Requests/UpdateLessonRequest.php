@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreLessonRequest extends FormRequest
+class UpdateLessonRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,21 +18,19 @@ class StoreLessonRequest extends FormRequest
             'course_id' => ['required', 'exists:courses,id'],
             'lesson_date' => ['required', 'date'],
 
-            // Lesson translations
+            // Lesson translations - all optional on update
             'translations' => ['required', 'array'],
             'translations.en' => ['nullable', 'array'],
             'translations.hy' => ['nullable', 'array'],
             'translations.en.locale' => ['nullable', 'in:en'],
             'translations.hy.locale' => ['nullable', 'in:hy'],
 
-            // Lesson translation fields - only require if the translation has content
+            // Lesson translation fields - all optional
             'translations.en.title' => ['nullable', 'string', 'max:255'],
             'translations.en.description' => ['nullable', 'string'],
-//            'translations.en.materials' => ['nullable', 'string'],
 
             'translations.hy.title' => ['nullable', 'string', 'max:255'],
             'translations.hy.description' => ['nullable', 'string'],
-//            'translations.hy.materials' => ['nullable', 'string'],
 
             // Lesson parts (dynamic array)
             'lesson_parts' => ['required', 'array', 'min:1', 'max:2'],
@@ -41,7 +39,7 @@ class StoreLessonRequest extends FormRequest
             'lesson_parts.*.audio_file_urls' => ['nullable', 'string'],
             'lesson_parts.*.duration_minutes' => ['nullable', 'integer', 'min:1'],
 
-            // File upload validations - dynamic based on available locales
+            // File upload validations - audio files optional on update
             'translations.*.materials' => ['nullable', 'array'],
             'translations.*.materials.*' => ['file', 'mimes:pdf', 'max:10240'], // 10MB max
             'lesson_parts.*.translations.*.audio_file' => ['nullable', 'file', 'mimes:mp3,audio/mpeg', 'max:122880'], // 120MB max
@@ -98,6 +96,9 @@ class StoreLessonRequest extends FormRequest
             'lesson_parts.*.part_number.max' => 'Part number cannot exceed 2.',
             'lesson_parts.*.duration_minutes.integer' => 'Duration must be a number.',
             'lesson_parts.*.duration_minutes.min' => 'Duration must be at least 1 minute.',
+
+            'lesson_parts.*.translations.*.audio_file.max' => 'Audio file size cannot exceed 120MB.',
         ];
     }
 }
+

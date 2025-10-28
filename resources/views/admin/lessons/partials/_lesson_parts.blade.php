@@ -36,13 +36,64 @@
                             <!-- Audio Files -->
                             <div class="md:col-span-2">
                                 <x-input-label value="Audio File (MP3)" lang="{{ $code }}" />
-                                <input
-                                    type="file"
-                                    :name="'lesson_parts[' + index + '][translations][{{ $code }}][audio_file]'"
-                                    accept=".mp3,audio/mpeg"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                                />
-                                <div class="mt-1 text-xs text-gray-500">Upload {{ $label }} MP3 file for this lesson part</div>
+
+                                <!-- Show existing audio file if present -->
+                                <template x-if="part.translations && part.translations.{{ $code }} && part.translations.{{ $code }}.audio_file">
+                                    <div>
+                                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center space-x-2 gap-2">
+                                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                                                    </svg>
+                                                    <span class="text-sm text-gray-700 dark:text-gray-300" x-text="'Current audio file'"></span>
+                                                </div>
+                                                <div class="flex items-center space-x-2 gap-2">
+                                                    <button
+                                                        type="button"
+                                                        @click="playAudio(part.translations.{{ $code }}.audio_file)"
+                                                        class="flex items-center dark:text-gray-400 text-xs font-medium"
+                                                    >
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        Play
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        @click="deleteAudio(part.part_number, '{{ $code }}')"
+                                                        class="flex items-center text-red-button hover:text-red-600 text-xs font-medium"
+                                                    >
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Hidden input to preserve existing audio file path on form submission -->
+                                        <input
+                                            type="hidden"
+                                            :name="'lesson_parts[' + index + '][translations][{{ $code }}][existing_audio_file]'"
+                                            :value="part.translations.{{ $code }}.audio_file"
+                                        />
+                                    </div>
+                                </template>
+
+                                <!-- Show file input only if no audio file exists -->
+                                <template x-if="!part.translations || !part.translations.{{ $code }} || !part.translations.{{ $code }}.audio_file">
+                                    <div>
+                                        <input
+                                            type="file"
+                                            :name="'lesson_parts[' + index + '][translations][{{ $code }}][audio_file]'"
+                                            accept=".mp3,audio/mpeg"
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                        />
+                                        <div class="mt-1 text-xs text-gray-500">Upload {{ $label }} MP3 file for this lesson part</div>
+                                    </div>
+                                </template>
                             </div>
                         </div>
 

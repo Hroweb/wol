@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Lesson;
 use App\Repositories\LessonRepository;
 use App\Traits\LocalizedServiceTrait;
-//use App\Services\FileUploadService;
+use Illuminate\Support\Facades\Storage;
 
 class LessonService
 {
@@ -115,19 +115,30 @@ class LessonService
     {
         $base = $this->extractBaseData($payload);
         $translations = $this->processTranslations($payload['translations'] ?? []);
-        $parts = $this->processParts($payload['lesson_parts'] ?? []);
+        $processedParts = $this->processParts($payload['lesson_parts'] ?? []);
 
-        return $this->repo->createWithTranslationsAndParts($base, $translations, $parts);
+        $lesson = $this->repo->createWithTranslationsAndParts($base, $translations, $processedParts);
+
+        // Queue any large audio files for background processing
+        $this->uploadService->queueLargeAudioFiles($processedParts, $lesson);
+
+        return $lesson;
     }
 
     public function update(Lesson $lesson, array $payload): Lesson
     {
         $base = $this->extractBaseData($payload);
         $existingMaterials = $this->getExistingMaterials($lesson);
+        $existingAudioFiles = $this->getExistingAudioFiles($lesson);
         $translations = $this->processTranslations($payload['translations'] ?? [], $existingMaterials);
-        $parts = $this->processParts($payload['lesson_parts'] ?? []);
+        $processedParts = $this->processParts($payload['lesson_parts'] ?? [], $existingAudioFiles);
 
-        return $this->repo->updateWithTranslationsAndParts($lesson, $base, $translations, $parts);
+        $lesson = $this->repo->updateWithTranslationsAndParts($lesson, $base, $translations, $processedParts);
+
+        // Queue any large audio files for background processing
+        $this->uploadService->queueLargeAudioFiles($processedParts, $lesson);
+
+        return $lesson;
     }
 
     private function extractBaseData(array $payload): array
@@ -143,9 +154,9 @@ class LessonService
         return $this->uploadService->uploadMaterials($translations, $existingMaterials);
     }
 
-    private function processParts(array $parts): array
+    private function processParts(array $parts, array $existingAudioFiles = []): array
     {
-        return $this->uploadService->uploadAudio($parts);
+        return $this->uploadService->uploadAudio($parts, $existingAudioFiles);
     }
 
     private function getExistingMaterials(Lesson $lesson): array
@@ -161,5 +172,120 @@ class LessonService
             }
         }
         return $existingMaterials;
+    }
+
+    private function getExistingAudioFiles(Lesson $lesson): array
+    {
+        $existingAudioFiles = [];
+        foreach ($lesson->parts as $part) {
+            foreach ($part->translations as $translation) {
+                if ($translation->audio_file) {
+                    $existingAudioFiles[$part->part_number][$translation->locale] = $translation->audio_file;
+                }
+            }
+        }
+        return $existingAudioFiles;
+    }
+
+    public function delete(Lesson $lesson): void
+    {
+        // Delete all lesson files (materials)
+        foreach ($lesson->translations as $translation) {
+            $materials = $translation->materials;
+            if (is_string($materials)) {
+                $materials = json_decode($materials, true) ?? [];
+            }
+            if (is_array($materials)) {
+                foreach ($materials as $material) {
+                    if (isset($material['path'])) {
+                        Storage::disk('public')->delete($material['path']);
+                    }
+                }
+            }
+        }
+
+        // Delete all audio files from lesson parts
+        foreach ($lesson->parts as $part) {
+            foreach ($part->translations as $translation) {
+                if ($translation->audio_file) {
+                    Storage::disk('public')->delete($translation->audio_file);
+                }
+            }
+        }
+
+        // Clean up audio upload jobs
+        \App\Models\AudioUploadJob::where('lesson_id', $lesson->id)->delete();
+
+        // Delete the lesson (cascade will handle relations)
+        $lesson->delete();
+    }
+
+    public function deleteMaterial(Lesson $lesson, string $locale, int $index): bool
+    {
+        $translation = $lesson->translations()->where('locale', $locale)->first();
+
+        if (!$translation) {
+            return false;
+        }
+
+        $materials = $translation->materials;
+        if (is_string($materials)) {
+            $materials = json_decode($materials, true) ?? [];
+        }
+        if (!is_array($materials)) {
+            $materials = [];
+        }
+
+        if (!isset($materials[$index])) {
+            return false;
+        }
+
+        $materialToDelete = $materials[$index];
+
+        // Delete the file from storage
+        if (isset($materialToDelete['path'])) {
+            Storage::disk('public')->delete($materialToDelete['path']);
+        }
+
+        // Remove the material from the array
+        array_splice($materials, $index, 1);
+
+        // Update the translation
+        $translation->update(['materials' => json_encode($materials)]);
+
+        return true;
+    }
+
+    public function deleteAudio(Lesson $lesson, int $partNumber, string $locale): bool
+    {
+        // Find the lesson part
+        $lessonPart = $lesson->parts()->where('part_number', $partNumber)->first();
+
+        if (!$lessonPart) {
+            return false;
+        }
+
+        // Find the translation for this part
+        $translation = $lessonPart->translations()->where('locale', $locale)->first();
+
+        if (!$translation) {
+            return false;
+        }
+
+        // Delete the audio file from storage
+        if ($translation->audio_file) {
+            Storage::disk('public')->delete($translation->audio_file);
+
+            // Update the translation to remove the audio file path
+            $translation->update(['audio_file' => null]);
+        }
+
+        // Clean up any related audio upload jobs (completed or failed)
+        \App\Models\AudioUploadJob::where('lesson_part_id', $lessonPart->id)
+            ->where('locale', $locale)
+            ->whereIn('status', ['completed', 'failed'])
+            ->delete();
+
+        return true;
     }
 }
