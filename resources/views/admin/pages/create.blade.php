@@ -11,7 +11,7 @@
 
         <div class="space-y-5 sm:space-y-6">
 
-            <form action="{{ route('admin.pages.store') }}" method="POST">
+            <form action="{{ route('admin.pages.store') }}" method="POST" x-data="{ slugManuallyEdited: false }" @generate-slug.window="if (!slugManuallyEdited) { const slug = window.generateSlugFromTitle($event.detail); if (slug) document.getElementById('slug').value = slug; }" @slug-manually-edited.window="slugManuallyEdited = true">
                 @csrf
                 <div class="course-edit-layout">
                     {{-- Left Sidebar: Page Title --}}

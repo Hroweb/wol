@@ -215,3 +215,17 @@ document.addEventListener('alpine:init', () => {
 
 
 Alpine.start();
+
+// Global slug generation function for pages
+window.generateSlugFromTitle = function(title) {
+    if (!title) {
+        return '';
+    }
+    let slug = title.toLowerCase().trim();
+    // Replace special characters
+    slug = slug.replace(/[^\w\s\u00C0-\u017F-]/g, ''); // Remove special chars but keep accented letters
+    slug = slug.replace(/[\s_]+/g, '-'); // Replace spaces and underscores with hyphens
+    slug = slug.replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
+    slug = slug.replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    return slug;
+};
