@@ -78,7 +78,7 @@ class Helper
             [
                 'name' => 'Pages',
                 'icon' => 'pages-icon',
-                'uri' => 'pages',
+                'uri' => route('admin.pages.index'),
                 'route_name' => 'admin.pages',
             ],
             [

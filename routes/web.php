@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\StudentsController;
 use App\Http\Controllers\Admin\CoursesController;
 use App\Http\Controllers\Admin\LessonsController;
+use App\Http\Controllers\Admin\PagesController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,4 +44,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/students/{student}/edit', [StudentsController::class, 'edit'])->name('students.edit');
     Route::put('/students/{student}', [StudentsController::class, 'update'])->name('students.update');
     Route::delete('/students/{student}', [StudentsController::class, 'destroy'])->name('students.destroy');
+
+    Route::get('/pages', [PagesController::class, 'index'])->name('pages.index');
+    Route::get('/pages/create', [PagesController::class, 'create'])->name('pages.create');
+    Route::post('/pages', [PagesController::class, 'store'])->name('pages.store');
+    Route::get('/pages/{page}/edit', [PagesController::class, 'edit'])->name('pages.edit');
+    Route::put('/pages/{page}', [PagesController::class, 'update'])->name('pages.update');
+    Route::delete('/pages/{page}', [PagesController::class, 'destroy'])->name('pages.destroy');
 });
