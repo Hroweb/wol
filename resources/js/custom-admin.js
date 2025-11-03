@@ -3,10 +3,122 @@
 import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 
+// Import Quill editor
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
+window.Quill = Quill;
+
 // A tiny, reusable selection store for tables
 // Usage: x-data="tableSelect({ items: [1,2,3] })"
 
 import './lessons.js';
+
+// Initialize Quill editors for page content
+function initQuillEditors() {
+    // Find all content textareas
+    const contentTextareas = document.querySelectorAll('textarea[id*="_content"]');
+
+    contentTextareas.forEach((textarea) => {
+        // Skip if already initialized
+        if (textarea.dataset.quillInitialized === 'true') {
+            return;
+        }
+
+        const textareaId = textarea.id;
+        const containerId = `${textareaId}_quill`;
+
+        // Check if container already exists (from previous initialization attempt)
+        let quillContainer = document.getElementById(containerId);
+
+        if (!quillContainer) {
+            // Create Quill container div
+            quillContainer = document.createElement('div');
+            quillContainer.id = containerId;
+            quillContainer.className = 'quill-editor-container';
+            textarea.parentNode.insertBefore(quillContainer, textarea);
+        }
+
+        // Hide the original textarea but keep it for form submission
+        textarea.style.display = 'none';
+
+        try {
+            // Initialize Quill with a simple toolbar
+            const quill = new Quill(`#${containerId}`, {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'align': [] }],
+                        ['link'],
+                        ['clean']
+                    ]
+                },
+                placeholder: 'Start writing...'
+            });
+
+            // Set initial content
+            if (textarea.value) {
+                quill.root.innerHTML = textarea.value;
+            }
+
+            // Sync Quill content to textarea on change
+            quill.on('text-change', function() {
+                textarea.value = quill.root.innerHTML;
+            });
+
+            // Also sync on paste and format changes
+            quill.on('editor-change', function() {
+                textarea.value = quill.root.innerHTML;
+            });
+
+            // Mark as initialized and store reference
+            textarea.dataset.quillInitialized = 'true';
+            textarea.dataset.quillId = containerId;
+            // Store Quill instance reference on the container for easy access
+            quillContainer.__quillInstance = quill;
+        } catch (error) {
+            console.error('Error initializing Quill editor:', error);
+        }
+    });
+}
+
+// Sync all Quill editors before form submission
+function syncAllQuillEditors() {
+    document.querySelectorAll('textarea[id*="_content"][data-quill-initialized="true"]').forEach((textarea) => {
+        const quillId = textarea.dataset.quillId;
+        if (quillId) {
+            const quillContainer = document.getElementById(quillId);
+            if (quillContainer && quillContainer.__quillInstance) {
+                textarea.value = quillContainer.__quillInstance.root.innerHTML;
+            }
+        }
+    });
+}
+
+// Initialize on DOM load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initQuillEditors();
+        // Ensure content is synced before form submission
+        document.addEventListener('submit', (e) => {
+            if (e.target.tagName === 'FORM') {
+                syncAllQuillEditors();
+            }
+        });
+    });
+} else {
+    initQuillEditors();
+    // Ensure content is synced before form submission
+    document.addEventListener('submit', (e) => {
+        if (e.target.tagName === 'FORM') {
+            syncAllQuillEditors();
+        }
+    });
+}
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('tableSelect', (config = {}) => {
         const norm = (items) => {

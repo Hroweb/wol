@@ -53,7 +53,7 @@ class LessonsController extends Controller
             return response()->json($lesson->fresh(['translations', 'parts.teacher']), 200);
         }
 
-        return redirect()->route('admin.lessons.index')->with('success', 'Lesson updated successfully');
+        return redirect()->route('admin.lessons.edit', $lesson)->with('success', 'Lesson updated successfully');
     }
 
     public function destroy(Lesson $lesson, LessonService $service): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse

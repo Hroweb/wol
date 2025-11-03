@@ -21,4 +21,13 @@ class Teacher extends Model
     {
         return $this->hasMany(TeacherTranslation::class);
     }
+
+    // Helper: get translation for a locale (falls back to app fallback)
+    public function t(?string $locale = null): ?TeacherTranslation
+    {
+        $locale ??= app()->getLocale();
+        $this->loadMissing('translations');
+        return $this->translations->firstWhere('locale', $locale)
+            ?? $this->translations->firstWhere('locale', config('app.fallback_locale'));
+    }
 }
