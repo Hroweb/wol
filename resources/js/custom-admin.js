@@ -5,6 +5,8 @@ window.Alpine = Alpine;
 
 // A tiny, reusable selection store for tables
 // Usage: x-data="tableSelect({ items: [1,2,3] })"
+
+import './lessons.js';
 document.addEventListener('alpine:init', () => {
     Alpine.data('tableSelect', (config = {}) => {
         const norm = (items) => {

@@ -76,6 +76,12 @@ class Helper
                 'route_name' => 'admin.students',
             ],
             [
+                'name' => 'Pages',
+                'icon' => 'pages-icon',
+                'uri' => 'pages',
+                'route_name' => 'admin.pages',
+            ],
+            [
                 'name' => 'Announcements',
                 'icon' => 'announcements-icon',
                 'uri' => 'announcements',
