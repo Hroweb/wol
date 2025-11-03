@@ -1,7 +1,7 @@
 /**
  * Lesson Form Alpine.js Component
  * Handles lesson creation and editing forms
- * 
+ *
  * This file is imported by custom-admin.js, which ensures Alpine is loaded first
  */
 
@@ -9,12 +9,12 @@
 // Alpine will be available via window.Alpine (set by custom-admin.js)
 document.addEventListener('alpine:init', () => {
     const Alpine = window.Alpine;
-    
+
     if (!Alpine) {
         console.error('Alpine.js is not available. Make sure custom-admin.js loads Alpine first.');
         return;
     }
-    
+
     Alpine.data('lessonForm', () => {
         // Get data from window object (injected by Blade template)
         const teachersData = window.lessonConfig?.teachersData || [];
@@ -27,8 +27,8 @@ document.addEventListener('alpine:init', () => {
         const deleteAudioUrl = window.lessonConfig?.deleteAudioUrl || '';
 
         // Initialize lesson parts - use existing data if available (edit mode), otherwise default
-        const initialParts = lessonPartsData && lessonPartsData.length > 0 
-            ? lessonPartsData 
+        const initialParts = lessonPartsData && lessonPartsData.length > 0
+            ? lessonPartsData
             : [
                 {
                     id: 1,
@@ -138,7 +138,7 @@ document.addEventListener('alpine:init', () => {
 
                 // Create a simple modal to show audio controls
                 const modal = document.createElement('div');
-                modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center';
+                modal.className = 'fixed inset-0 bg-black dark:bg-white overflow-y-auto h-full w-full z-50 flex items-center justify-center';
                 modal.innerHTML = `
                     <div class="relative p-8 bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
                         <div class="flex justify-between items-center mb-4">

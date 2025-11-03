@@ -11,6 +11,7 @@ window.Quill = Quill;
 // A tiny, reusable selection store for tables
 // Usage: x-data="tableSelect({ items: [1,2,3] })"
 
+import './sections.js';
 import './lessons.js';
 
 // Initialize Quill editors for page content

@@ -18,12 +18,12 @@
                     <div class="course-main-content space-y-6">
                         @include('admin.pages.partials._translatable', ['locales' => App\Helpers\Helper::getLocales()])
 
-                        <div class="mb-10 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                            <div class="px-5 py-3 sm:px-6 sm:py-4 border-top-radius bg-ghostwhite dark:bg-gray-dark">
-                                <h3 class="py-1 text-base font-medium text-gray-800 dark:text-white/90">Page Sections</h3>
-                            </div>
-                            <x-admin.pages.sections.empty />
-                        </div>
+                        {{-- Page Sections (Inline Management) --}}
+                        @php
+                            $emptyPage = new \App\Models\Page();
+                            $emptyPage->sections = collect([]);
+                        @endphp
+                        @include('admin.pages.partials._sections', ['page' => $emptyPage])
                     </div>
                     {{-- Right Sidebar: Basic Fields + Meta --}}
                     <div class="course-sidebar">

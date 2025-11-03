@@ -38,18 +38,18 @@ class Page extends Model
     }
 
     // Sections
-    /*public function sections(): HasMany
+    public function sections(): HasMany
     {
         return $this->hasMany(PageSection::class)->orderBy('order');
-    }*/
+    }
 
     // Active sections only
-    /*public function activeSections(): HasMany
+    public function activeSections(): HasMany
     {
         return $this->hasMany(PageSection::class)
             ->where('is_active', true)
             ->orderBy('order');
-    }*/
+    }
 
     // Scopes
     public function scopePublished($query)

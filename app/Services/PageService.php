@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\Course;
 use App\Models\Page;
+use App\Models\PageSection;
 use App\Models\Teacher;
 use App\Repositories\PageRepository;
 use App\Traits\LocalizedServiceTrait;
+use Illuminate\Support\Facades\DB;
 
 class PageService
 {
@@ -33,7 +35,18 @@ class PageService
             'order' => $payload['order'] ?? 0,
         ];
         $translations = $payload['translations'] ?? [];
-        return $this->repo->createWithTranslations($base, $translations);
+        $sections = $payload['sections'] ?? [];
+
+        return DB::transaction(function () use ($base, $translations, $sections) {
+            $page = $this->repo->createWithTranslations($base, $translations);
+
+            // Handle sections if provided
+            if (!empty($sections)) {
+                $this->syncSections($page, $sections);
+            }
+
+            return $page->fresh(['translations', 'sections.translations']);
+        });
     }
 
     public function update(Page $page, array $payload): Page
@@ -45,24 +58,29 @@ class PageService
             'order' => $payload['order'] ?? $page->order,
         ];
         $translations = $payload['translations'] ?? [];
-        $page = $this->repo->updateWithTranslations($page, $base, $translations);
+        $sections = $payload['sections'] ?? [];
+        $deletedSections = $payload['deleted_sections'] ?? [];
 
-        // Handle sections if provided
-        if (isset($payload['sections'])) {
-            //$this->syncSections($page, $payload['sections']);
-        }
+        return DB::transaction(function () use ($page, $base, $translations, $sections, $deletedSections) {
+            $page = $this->repo->updateWithTranslations($page, $base, $translations);
 
-        // Handle deleted sections
-        /*if (isset($payload['deleted_sections']) && is_array($payload['deleted_sections'])) {
-            foreach ($payload['deleted_sections'] as $sectionId) {
-                $section = $page->sections()->find($sectionId);
-                if ($section) {
-                    $this->deleteSection($section);
+            // Handle deleted sections first
+            if (!empty($deletedSections) && is_array($deletedSections)) {
+                foreach ($deletedSections as $sectionId) {
+                    $section = $page->sections()->find($sectionId);
+                    if ($section) {
+                        $this->deleteSection($section);
+                    }
                 }
             }
-        }*/
 
-        return $page->fresh(['translations'/*, 'sections.translations'*/]);
+            // Handle sections if provided
+            if (!empty($sections)) {
+                $this->syncSections($page, $sections);
+            }
+
+            return $page->fresh(['translations', 'sections.translations']);
+        });
     }
 
     public function delete(Page $page): bool
@@ -114,5 +132,92 @@ class PageService
                     'title' => $trans?->title ?? 'Course #' . $course->id,
                 ];
             });
+    }
+
+    /**
+     * Sync page sections (create new, update existing, delete removed)
+     */
+    private function syncSections(Page $page, array $sections): void
+    {
+        // Get existing sections before any modifications
+        $existingSections = $page->sections()->with('translations')->get()->keyBy('id');
+        $existingSectionIds = $existingSections->keys()->toArray();
+
+        // If sections array is empty, delete all existing sections
+        if (empty($sections)) {
+            $page->sections()->delete();
+            return;
+        }
+
+        // Track which existing section IDs are being kept (updated)
+        $keptSectionIds = [];
+
+        foreach ($sections as $sectionData) {
+            $sectionId = $sectionData['id'] ?? null;
+
+            if ($sectionId && $existingSections->has($sectionId)) {
+                // Update existing section
+                $section = $existingSections[$sectionId];
+                $section->update([
+                    'section_type' => $sectionData['section_type'] ?? $section->section_type,
+                    'order' => $sectionData['order'] ?? $section->order,
+                    'is_active' => isset($sectionData['is_active']) ? (bool)$sectionData['is_active'] : $section->is_active,
+                    'settings' => $sectionData['settings'] ?? $section->settings,
+                ]);
+
+                // Sync translations
+                $this->syncSectionTranslations($section, $sectionData['translations'] ?? []);
+
+                // Track that this section is being kept
+                $keptSectionIds[] = $sectionId;
+            } else {
+                // Create new section
+                $section = $page->sections()->create([
+                    'section_type' => $sectionData['section_type'] ?? 'hero',
+                    'order' => $sectionData['order'] ?? 0,
+                    'is_active' => isset($sectionData['is_active']) ? (bool)$sectionData['is_active'] : true,
+                    'settings' => $sectionData['settings'] ?? [],
+                ]);
+
+                // Create translations
+                $this->syncSectionTranslations($section, $sectionData['translations'] ?? []);
+            }
+        }
+
+        // Delete existing sections that were not kept (removed from form)
+        // Only delete sections that existed before we started syncing
+        $sectionsToDelete = array_diff($existingSectionIds, $keptSectionIds);
+        if (!empty($sectionsToDelete)) {
+            $page->sections()->whereIn('id', $sectionsToDelete)->delete();
+        }
+    }
+
+    /**
+     * Sync section translations (replace all translations)
+     */
+    private function syncSectionTranslations(PageSection $section, array $translations): void
+    {
+        // Delete existing translations
+        $section->translations()->delete();
+
+        // Create new translations
+        foreach ($translations as $translationData) {
+            $section->translations()->create([
+                'locale' => $translationData['locale'] ?? config('app.fallback_locale'),
+                'title' => $translationData['title'] ?? null,
+                'subtitle' => $translationData['subtitle'] ?? null,
+                'content' => $translationData['content'] ?? null,
+                'cta_text' => $translationData['cta_text'] ?? null,
+                'cta_link' => $translationData['cta_link'] ?? null,
+            ]);
+        }
+    }
+
+    /**
+     * Delete a section and its translations
+     */
+    private function deleteSection(PageSection $section): bool
+    {
+        return $section->delete();
     }
 }

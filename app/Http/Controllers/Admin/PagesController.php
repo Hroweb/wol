@@ -39,7 +39,7 @@ class PagesController extends Controller
 
     public function edit(PageService $service, Page $page): \Illuminate\Contracts\View\View
     {
-        //$page->load(['translations', 'sections.translations']);
+        $page->load(['translations', 'sections.translations']);
 
         $formData = $service->getFormData();
         return view('admin.pages.edit', compact('page') + $formData);
@@ -47,10 +47,10 @@ class PagesController extends Controller
 
     public function update(UpdatePageRequest $request, PageService $service, Page $page): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
     {
-        $service->update($page, $request->validated());
+        $page = $service->update($page, $request->validated());
 
         if ($request->wantsJson()) {
-            return response()->json($page->fresh('translations'), 200);
+            return response()->json($page->fresh(['translations', 'sections.translations']), 200);
         }
 
         return redirect()->route('admin.pages.edit', $page)->with('success', 'Page updated successfully');

@@ -81,20 +81,20 @@ class StoreTeacherRequest extends FormRequest
             // If EN block exists, require these EN fields
             'translations.en.first_name'      => ['required_with:translations.en','string','max:255'],
             'translations.en.last_name'       => ['required_with:translations.en','string','max:255'],
-            'translations.en.bio'             => ['required_with:translations.en','string'],
-            'translations.en.specializations' => ['required_with:translations.en'],
-            'translations.en.position'        => ['required_with:translations.en','string','max:150'],
-            'translations.en.church_name'     => ['required_with:translations.en','string','max:150'],
+            'translations.en.bio'             => ['sometimes','string'],
+            'translations.en.specializations' => ['sometimes'],
+            'translations.en.position'        => ['sometimes','string','max:150'],
+            'translations.en.church_name'     => ['sometimes','string','max:150'],
             'translations.en.city'            => ['required_with:translations.en','string','max:100'],
             'translations.en.country'         => ['required_with:translations.en','string','max:100'],
 
             // If HY block exists, require these HY fields
             'translations.hy.first_name'      => ['required_with:translations.hy','string','max:255'],
             'translations.hy.last_name'       => ['required_with:translations.hy','string','max:255'],
-            'translations.hy.bio'             => ['required_with:translations.hy','string'],
-            'translations.hy.specializations' => ['required_with:translations.hy'],
-            'translations.hy.position'        => ['required_with:translations.hy','string','max:150'],
-            'translations.hy.church_name'     => ['required_with:translations.hy','string','max:150'],
+            'translations.hy.bio'             => ['nullable','string'],
+            'translations.hy.specializations' => ['nullable'],
+            'translations.hy.position'        => ['nullable','string','max:150'],
+            'translations.hy.church_name'     => ['nullable','string','max:150'],
             'translations.hy.city'            => ['required_with:translations.hy','string','max:100'],
             'translations.hy.country'         => ['required_with:translations.hy','string','max:100'],
         ];

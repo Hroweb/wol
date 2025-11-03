@@ -20,7 +20,7 @@
                         @include('admin.pages.partials._translatable', ['locales' => App\Helpers\Helper::getLocales(), 'page' => $page])
 
                         {{-- Page Sections (Inline Management) --}}
-{{--                        @include('admin.pages.partials._sections', ['page' => $page])--}}
+                        @include('admin.pages.partials._sections', ['page' => $page])
                     </div>
                     {{-- Right Sidebar: Basic Fields + Meta --}}
                     <div class="course-sidebar">

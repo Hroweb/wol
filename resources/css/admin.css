@@ -50,7 +50,9 @@ svg{-ms-touch-action:none;touch-action:none}image,text,.jvm-zoomin,.jvm-zoomout{
         --color-gray-800: #1d2939;
         --color-gray-900: #101828;
         --color-black: #101828;
+        --color-black-rgb: 16,24,40;
         --color-white: #ffffff;
+        --color-white-rgb: 255 255 255;
         --color-ghostwhite: #fafafa;
         --spacing: 0.25rem;
         --container-xs: 20rem;
@@ -4611,6 +4613,12 @@ span.flatpickr-weekday,
 /**/
 .bg-black {
     background-color: var(--color-black);
+}
+.bg-black\/50 {
+    background-color: rgba(var(--color-black-rgb), 0.5);
+}
+.dark\:bg-white {
+    background-color: var(--color-white);
 }
 .border-gray-800 {
     border-color: var(--color-gray-800);

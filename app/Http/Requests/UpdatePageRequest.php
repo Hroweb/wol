@@ -44,11 +44,11 @@ class UpdatePageRequest extends FormRequest
 
             'sections' => ['nullable', 'array'],
             'sections.*.id' => ['nullable', 'integer', 'exists:page_sections,id'],
-            //'sections.*.section_type' => ['nullable', 'string', Rule::in(PageSection::SECTION_TYPES)],
+            'sections.*.section_type' => ['required', 'string', Rule::in(PageSection::SECTION_TYPES)],
             'sections.*.order' => ['nullable', 'integer'],
             'sections.*.is_active' => ['nullable', 'boolean'],
             'sections.*.settings' => ['nullable', 'array'],
-            'sections.*.translations' => ['nullable', 'array', 'min:1'],
+            'sections.*.translations' => ['nullable', 'array'],
             'sections.*.translations.*.locale' => ['nullable', 'string', 'max:5'],
             'sections.*.translations.*.title' => ['nullable', 'string', 'max:255'],
             'sections.*.translations.*.subtitle' => ['nullable', 'string', 'max:255'],
@@ -68,30 +68,47 @@ class UpdatePageRequest extends FormRequest
             $en = $t['en'] ?? [];
             $hy = $t['hy'] ?? [];
 
-            // Check if user actually filled data for each locale (not just the hidden locale field)
-            $enHasData = !empty(trim($en['title'] ?? '')) ||
-                !empty(trim($en['content'] ?? '')) ||
-                !empty(trim($en['meta_title'] ?? '')) ||
-                !empty(trim($en['meta_description'] ?? ''));
+            // Helper function to check if a value is actually filled (not empty after trim and stripping HTML)
+            $isFilled = function($value) {
+                if (empty($value)) {
+                    return false;
+                }
+                // Strip HTML tags and trim
+                $cleaned = trim(strip_tags($value));
+                // Remove common empty HTML patterns from rich text editors
+                $cleaned = preg_replace('/^<p[^>]*>(\s|&nbsp;|<br\s*\/?>)*<\/p>$/i', '', $cleaned);
+                $cleaned = preg_replace('/&nbsp;/', ' ', $cleaned);
+                $cleaned = trim($cleaned);
+                return !empty($cleaned);
+            };
 
-            $hyHasData = !empty(trim($hy['title'] ?? '')) ||
-                !empty(trim($hy['content'] ?? '')) ||
-                !empty(trim($hy['meta_title'] ?? '')) ||
-                !empty(trim($hy['meta_description'] ?? ''));
+            // Check if user actually filled data for each locale
+            // Exclude the locale field itself from the check
+            $enHasData = $isFilled($en['title'] ?? '') ||
+                $isFilled($en['content'] ?? '') ||
+                $isFilled($en['meta_title'] ?? '') ||
+                $isFilled($en['meta_description'] ?? '') ||
+                $isFilled($en['meta_keywords'] ?? '');
+
+            $hyHasData = $isFilled($hy['title'] ?? '') ||
+                $isFilled($hy['content'] ?? '') ||
+                $isFilled($hy['meta_title'] ?? '') ||
+                $isFilled($hy['meta_description'] ?? '') ||
+                $isFilled($hy['meta_keywords'] ?? '');
 
             // If English data is provided, title is required
-            if ($enHasData && empty(trim($en['title'] ?? ''))) {
+            if ($enHasData && !$isFilled($en['title'] ?? '')) {
                 $v->errors()->add('translations.en.title', 'Title is required when providing English translation data.');
             }
 
             // If Armenian data is provided, title is required
-            if ($hyHasData && empty(trim($hy['title'] ?? ''))) {
+            if ($hyHasData && !$isFilled($hy['title'] ?? '')) {
                 $v->errors()->add('translations.hy.title', 'Title is required when providing Armenian translation data.');
             }
 
             // At least one translation with a title must be provided
-            $enHasTitle = !empty(trim($en['title'] ?? ''));
-            $hyHasTitle = !empty(trim($hy['title'] ?? ''));
+            $enHasTitle = $isFilled($en['title'] ?? '');
+            $hyHasTitle = $isFilled($hy['title'] ?? '');
 
             if (!$enHasTitle && !$hyHasTitle) {
                 $v->errors()->add('translations', 'At least one translation (English or Armenian) with a title is required.');
